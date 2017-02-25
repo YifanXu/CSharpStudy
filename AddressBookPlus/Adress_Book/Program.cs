@@ -82,9 +82,6 @@ namespace AddressBookPlus
 			for (int i = 0; i < book.Count; i++) {
 				Console.WriteLine (" {0}. {1}", i + 1, book [i]);
 			}
-//			foreach (string line in book) {
-//				Console.WriteLine (" - " + line);
-//			}
 			Console.ForegroundColor = ConsoleColor.Blue;
 			Console.WriteLine ("All Elements displayed");
 			Console.ForegroundColor = ConsoleColor.White;

@@ -13,9 +13,8 @@ namespace Sorted_Linked_Boys
 		{
 			while (true)
 			{
-				Item root = new Item { };
+				Item root;
 				string input;
-				int itemCount = 0;
 
 				while(true)
 				{
@@ -33,19 +32,11 @@ namespace Sorted_Linked_Boys
 					//Validate input
 					int num = GetNumber(input);
 					//Creating root
-					if (itemCount == 0)
-					{
-						root.number = num;
-					}
-					else
-					{
-						//Creating a new item
-						var newItem = new Item {
-							number = num
-						};
-						AddNewItem (newItem, ref root);
-					}
-					itemCount++;
+					//Creating a new item
+					var newItem = new Item {
+						number = num
+					};
+					root = AddNewItem (newItem, root);
 				}
 
 				//Print out number sequence
@@ -53,37 +44,25 @@ namespace Sorted_Linked_Boys
 			}
 		}
 
-		public static void AddNewItem (Item newItem, ref Item root){
-			//In case new item is before root
-			if (newItem.number < root.number) 
-			{
-				newItem.next = root;
-				root = newItem;
-			} 
-			else 
-			{
-				//If there is only one item and new item is bigger than root
-				if (root.next == null) 
-				{
-					root.next = newItem;
-				} 
-				else 
-				{
-					Item searchCurrent = root.next;
-					//Make sure it's not the end of list
-					while (searchCurrent.next != null) 
-					{
-						//If the item found something bigger than itself...
-						if (newItem.number < searchCurrent.next.number) 
-						{
-							newItem.next = searchCurrent.next;
-							break;
-						}
-						searchCurrent = searchCurrent.next;
+		public static Item AddNewItem (Item newItem, Item root){
+			Item current = root;
+			Item prev = null;
+			while (true) {
+				if ((current == null) ||(newItem.number < current.number)) {
+					newItem.next = current;
+					if (prev == null) {
+						root = newItem;
+					} else {
+						prev.next = newItem;
 					}
-					searchCurrent.next = newItem;
+					break;
 				}
+
+				prev = current;
+				current = current.next;
 			}
+
+			return root;
 		}
 
 		public static void printList (Item root){

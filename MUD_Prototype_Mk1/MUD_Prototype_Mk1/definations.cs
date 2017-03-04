@@ -14,7 +14,14 @@ namespace MUD_Prototype_Mk1
         West,
         East,
         Look,
-        Get
+        Get,
+        Examine,
+        Help,
+        checkInv
+    }
+    public class Player
+    {
+        public List<item> Inventory;
     }
     public class item
     {
@@ -48,6 +55,39 @@ namespace MUD_Prototype_Mk1
                 default:
                     return null;
             }
+        }
+
+        public string examine(string item)
+        {
+            foreach (item thing in objects)
+            {
+                if(thing.name.Equals(item,StringComparison.OrdinalIgnoreCase))
+                {
+                    return thing.description;
+                }
+            }
+            return "You cannot look upon such a thing.";
+        }
+
+        public item obtain(string item)
+        {
+            foreach (item thing in objects)
+            {
+                if (thing.name.Equals(item, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (thing.obtainable)
+                    {
+                        Program.write(ConsoleColor.Green, thing.AttemptMessage);
+                        return thing;
+                    }else
+                    {
+                        Program.write(ConsoleColor.Red, thing.AttemptMessage);
+                        return null;
+                    }
+                }
+            }
+            Program.write(ConsoleColor.Red, "You cannot look upon such a thing.");
+            return null;
         }
     }
 }

@@ -13,25 +13,41 @@ namespace MUD_Prototype_Mk1
     {
         static void Main(string[] args)
         {
-            Dictionary<string, Actions> Command = new Dictionary<string, Actions>(StringComparer.CurrentCultureIgnoreCase)
+            Dictionary<string, Actions> Command = new Dictionary<string, Actions>(StringComparer.OrdinalIgnoreCase)
             {
                 {"move", Actions.Move},
-                {"look", Actions.Look}
+                {"go", Actions.Move},
+                {"look", Actions.Look},
+                {"examine", Actions.Examine },
+                {"ex", Actions.Examine },
+                {"help", Actions.Help },
+                {"get", Actions.Get },
+                {"obtain", Actions.Get },
+                {"inv", Actions.checkInv },
+                {"inventory", Actions.checkInv }
             };
-            Dictionary<string, Actions> moveCommands = new Dictionary<string, Actions>(StringComparer.CurrentCultureIgnoreCase){
+            Dictionary<string, Actions> moveCommands = new Dictionary<string, Actions>(StringComparer.OrdinalIgnoreCase){
                 {"n", Actions.North },
+                {"north", Actions.North },
                 {"s", Actions.South },
+                {"south", Actions.South },
                 {"w", Actions.West },
-                {"e", Actions.East }
+                {"west", Actions.West },
+                {"e", Actions.East },
+                {"east", Actions.East }
             };
             var path = string.Format("data{0}test.txt", Path.DirectorySeparatorChar);
             room entrance = ReadFile(path);
             room current = entrance;
+            var player = new Player
+            {
+                Inventory = new List<item>()
+            };
+            write(ConsoleColor.Green, current.name);
+            Console.WriteLine(current.description);
+            write(ConsoleColor.Yellow, "Type in your action");
             while (true)
             {
-                write(ConsoleColor.Green, current.name);
-                Console.WriteLine(current.description);
-                Console.WriteLine("Type in your action");
                 string input = Console.ReadLine();
                 Actions act;
                 while (string.IsNullOrEmpty(input) || !Command.TryGetValue(input.Split(' ')[0],out act))
@@ -59,14 +75,41 @@ namespace MUD_Prototype_Mk1
                             if (targetRoom != null)
                             {
                                 current = targetRoom;
+                                write(ConsoleColor.Green, current.name);
+                                Console.WriteLine(current.description);
+                                write(ConsoleColor.Yellow, "Type in your action");
                             }
                         }
 
                         break;
 
+                    case Actions.Examine:
+                        string text = current.examine(parameter);
+                        write(ConsoleColor.Cyan, text);
+                        break;
 
                     case Actions.Look:
-                        Console.WriteLine(current.description);
+                        write(ConsoleColor.Green, current.name);
+                        write(ConsoleColor.Cyan, current.description);
+                        break;
+
+                    case Actions.Help:
+                        help();
+                        break;
+
+                    case Actions.Get:
+                        item thing = current.obtain(parameter);
+                        if(thing != null)
+                        {
+                            player.Inventory.Add(thing);
+                        }
+                        break;
+                    case Actions.checkInv:
+                        write(ConsoleColor.Cyan, "You inventory contains:");
+                        foreach(item invItem in player.Inventory)
+                        {
+                            write(ConsoleColor.Cyan, invItem.name);
+                        }
                         break;
                 }
             }
@@ -100,6 +143,11 @@ namespace MUD_Prototype_Mk1
             Console.ForegroundColor = color;
             Console.WriteLine(text);
             Console.ResetColor();
+        }
+
+        public static void help()
+        {
+            write(ConsoleColor.Green, "'move + direction' to move (ex. move east)\n'examine+object' to get details on an object (ex. examine rock)\n'look'to get the room description");
         }
 
         public static room ReadFile(string path)

@@ -1,0 +1,11 @@
+R|0|Cave|This is the place you woke up. Glancing your surroundings, you found a small sharp rock and a tunnel leading east.
+I|0|Rock|A small natural stone with some next texture, might come in handy.|Y|You picked up the rock
+I|1|Tunnel|Darkness surround your only exit, will you take it?|N|Why are you trying to pick up a tunnel?
+R|1|Tunnel|You are in a smooth tunnel, so smooth that you might fall. You can only blackness to the east and the west.
+R|2|Cave Entrance|A cave entrance with a tunnel leading west, and a dirt path to the forest. A castle can be seen in the distance.
+I|0|Castle|A medieval looking castle is off the the distance to the east. Looks like a small walk to get there.|N|It's too far away and too large.
+END
+0|E|1
+1|W|0
+1|E|2
+2|W|1

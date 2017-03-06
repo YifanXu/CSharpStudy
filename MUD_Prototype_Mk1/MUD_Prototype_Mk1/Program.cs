@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace MUD_Prototype_Mk1
 {
@@ -11,6 +13,7 @@ namespace MUD_Prototype_Mk1
 
     class Program
     {
+        public string savePath = "data"+ Path.DirectorySeparatorChar+"saveFile";
         static void Main(string[] args)
         {
             Dictionary<string, Actions> Command = new Dictionary<string, Actions>(StringComparer.OrdinalIgnoreCase)
@@ -24,8 +27,11 @@ namespace MUD_Prototype_Mk1
                 {"get", Actions.Get },
                 {"obtain", Actions.Get },
                 {"inv", Actions.checkInv },
-                {"inventory", Actions.checkInv }
-            };
+                {"inventory", Actions.checkInv },
+                {"quit", Actions.save },
+                {"exit", Actions.save },
+                {"save", Actions.save }
+            }; 
             Dictionary<string, Actions> moveCommands = new Dictionary<string, Actions>(StringComparer.OrdinalIgnoreCase){
                 {"n", Actions.North },
                 {"north", Actions.North },
@@ -36,19 +42,36 @@ namespace MUD_Prototype_Mk1
                 {"e", Actions.East },
                 {"east", Actions.East }
             };
-            var path = string.Format("data{0}test.txt", Path.DirectorySeparatorChar);
-            room entrance = ReadFile(path);
-            room current = entrance;
-            var player = new Player
+            var path = new Paths();
+            Room entrance = ReadFile(path.defaultMap);
+            Room current = entrance;
+
+            //Load Files?
+            Player player;
+            write(ConsoleColor.Green, "new or load?");
+            string input = Console.ReadLine();
+            while (string.IsNullOrEmpty(input) || (input != "new" && input != "load")) {
+                write(ConsoleColor.Red, "Invalid Input");
+                input = Console.ReadLine();     
+            }
+            if(input == "new")
             {
-                Inventory = new List<item>()
-            };
+                player = new Player();
+            }else
+            {
+                XmlSerializer seralizer = new XmlSerializer(typeof(Player));
+                using (Stream s = new FileStream(path.playerSave, FileMode.Open, FileAccess.Read))
+                {
+                    player = (Player) seralizer.Deserialize(s);
+                }
+            }
+
             write(ConsoleColor.Green, current.name);
             Console.WriteLine(current.description);
             write(ConsoleColor.Yellow, "Type in your action");
             while (true)
             {
-                string input = Console.ReadLine();
+                input = Console.ReadLine();
                 Actions act;
                 while (string.IsNullOrEmpty(input) || !Command.TryGetValue(input.Split(' ')[0],out act))
                 {
@@ -71,7 +94,7 @@ namespace MUD_Prototype_Mk1
                         }
                         else
                         {
-                            room targetRoom = current.move(dir);
+                            Room targetRoom = current.move(dir);
                             if (targetRoom != null)
                             {
                                 current = targetRoom;
@@ -98,7 +121,7 @@ namespace MUD_Prototype_Mk1
                         break;
 
                     case Actions.Get:
-                        item thing = current.obtain(parameter);
+                        Item thing = current.obtain(parameter);
                         if(thing != null)
                         {
                             player.Inventory.Add(thing);
@@ -106,36 +129,21 @@ namespace MUD_Prototype_Mk1
                         break;
                     case Actions.checkInv:
                         write(ConsoleColor.Cyan, "You inventory contains:");
-                        foreach(item invItem in player.Inventory)
+                        foreach(Item invItem in player.Inventory)
                         {
                             write(ConsoleColor.Cyan, invItem.name);
                         }
                         break;
+                    case Actions.save:
+                        var seralizer = new XmlSerializer(typeof (Player));
+                        using(Stream s = new FileStream(path.playerSave,FileMode.Create,FileAccess.Write))
+                        {
+                            seralizer.Serialize(s, player);
+                        }
+                        write(ConsoleColor.Green, "Saved.");
+                        return;
                 }
             }
-        }
-
-        public static room CreateA()
-        {
-            var entrance = new room
-            {
-                description = "You enter room A",
-                name = "entrance",
-                
-                e = new room
-                {
-                    name = "room B",
-                    description = "this is the end of the room",
-                    
-                }
-            };
-            room current = entrance;
-            while(current.e != null)
-            {
-                current.e.w = current;
-                current = current.e;
-            }
-            return entrance;
         }
 
         public static void write (ConsoleColor color, string text)
@@ -150,34 +158,26 @@ namespace MUD_Prototype_Mk1
             write(ConsoleColor.Green, "'move + direction' to move (ex. move east)\n'examine+object' to get details on an object (ex. examine rock)\n'look'to get the room description");
         }
 
-        public static room ReadFile(string path)
+        public static Room ReadFile(string path)
         {
             if (!File.Exists(path))
             {
                 return null;
             }
-            List<room> rooms = new List<room>();
+            List<Room> rooms = new List<Room>();
             int line = 0;
             string[] input = File.ReadAllLines(path);
-            while(line < input.Length)
+            while(line < input.Length && input[line] != "END")
             {
                 //Add Room
                 string[] parameters = input[line].Split('|');
-                rooms.Add(new room {
-                    name = parameters[2],
-                    description = parameters[3],
-                    objects = new List<item>()
-                });
+                rooms.Add(new Room(parameters[2], parameters[3]));
                 line++;
                 //Add Items
                 while(input[line][0] == 'I')
                 {
                     parameters = input[line].Split('|');
-                    rooms[rooms.Count - 1].objects.Add(new item {
-                        name = parameters[2],
-                        description = parameters[3],
-                        AttemptMessage = parameters[5]
-                    });
+                    rooms[rooms.Count - 1].objects.Add(new Item(parameters[2], parameters[3], parameters[5]));
                     if(parameters[4] == "Y")
                     {
                         rooms[rooms.Count - 1].objects[Int32.Parse(parameters[1])].obtainable = true;
@@ -187,13 +187,8 @@ namespace MUD_Prototype_Mk1
                     }
                     line++;
                 }
-                //Check if i need to start making connections
-                if(input[line] == "END")
-                {
-                    line++;
-                    break;
-                }
             }
+            line++;
             while (line < input.Length)
             {
                 string[] parameters = input[line].Split('|');

@@ -6,11 +6,17 @@ R|2|Cave Entrance|A cave entrance with a tunnel leading west, and a dirt path to
 I|0|Castle|A medieval looking castle is off the the distance to the east. Looks like a small walk to get there.|N|It's too far away and too large.
 R|3|Forest Path|You find yourself at a point with path leading north, west, and east... You also find an apple at your feet.
 I|0|Apple|The apple is in the proccess of rotting away, and it's certainly not edible.|Y|You picked up the apple, for whatever reason.
+I|1|path|It's A path made of gravel.|N|You cannot pick it up
 R|4|Northern Path|You see a small hut to your east, and path to the north and south.
+I|0|path|It's A path made of gravel.|N|You cannot pick it up
 R|5|Hut|An abandoned hut, with nobody inside. It has been left to time for a while now. Inside, you can see a water bottle and a chest.
 I|0|Water bottle|The water bottle looks fresh and the water inside seems pure and refreshing.|Y|You picked up the water bottle.
 I|1|Chest|You open the chest with all of your strength, and you only found a pen inside. It seems to be working.|N|The chest is too heavy to carry.
 I|2|Pen|The pen looks unused. After some testing, you confirmed that it is still working.|Y|You picked up the pen.
+R|6|Eastern Path|You can see a large medieval castle to the east, and a path lies you between you and the castle. Alternatively, you can take the path to west.
+I|0|Castle|A medieval looking castle is off the the distance to the east. Looks like a small walk to get there.|N|It's too far away and too large.
+I|1|path|It's A path made of gravel.|N|You cannot pick it up
+R|7|Castle Drawbridge|A wooden bridge, suspended by chains. It seems like the bridge is unused for quite a long time now.
 END
 0|E|1
 1|W|0
@@ -22,3 +28,5 @@ END
 4|S|3
 4|E|5
 5|W|4
+3|E|6
+6|W|3

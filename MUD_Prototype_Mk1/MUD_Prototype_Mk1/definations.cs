@@ -1,11 +1,41 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Xml;
+using System.Xml.Serialization;
 
 namespace MUD_Prototype_Mk1
 {
+    public class Creature
+    {
+        public string name;
+        public int Health;
+        public int damage;
+        public Creature(string name, int health, int damage)
+        {
+            this.name = name;
+            this.Health = health;
+            this.damage = damage;
+        }
+    }
+
+    public class Paths
+    {
+        public string playerSave;
+        public string defaultMap;
+        public string mapSave;
+
+        public Paths()
+        {
+            this.playerSave = string.Format("data{0}playerSaveFile.txt", Path.DirectorySeparatorChar);
+            this.defaultMap = string.Format("data{0}defaultMap.txt", Path.DirectorySeparatorChar);
+            this.mapSave = string.Format("data{0}mapSaveFile.txt", Path.DirectorySeparatorChar);
+        }
+    }
+
     public enum Actions
     {
         Move,
@@ -17,30 +47,62 @@ namespace MUD_Prototype_Mk1
         Get,
         Examine,
         Help,
-        checkInv
+        checkInv,
+        save
     }
-    public class Player
+    public class Player : Creature
     {
-        public List<item> Inventory;
+        //[XmlArray("PersonenArray")]
+        public List<Item> Inventory;
+
+        public Player() : this("Player") { }
+
+        public Player(string name) : base (name,1000,100)
+        {
+            Inventory = new List<Item>();
+        }
     }
-    public class item
+    public class Item
     {
         public string name;
         public string description;
         public bool obtainable;
         public string AttemptMessage;
+
+        public Item()
+        {
+
+        }
+
+        public Item(string name, string description, string AttemptMessage)
+        {
+            this.name = name;
+            this.description = description;
+            this.AttemptMessage = AttemptMessage;
+        }
     }
-    public class room
+    public class Room
     {
         public string name;
         public string description;
-        public room n;
-        public room s;
-        public room w;
-        public room e;
-        public List<item> objects;
+        public Room n;
+        public Room s;
+        public Room w;
+        public Room e;
+        public List<Item> objects;
 
-        public room move(Actions direction)
+        public Room()
+        {
+        }
+
+        public Room (string name, string description)
+        {
+            this.name = name;
+            this.description = description;
+            this.objects = new List<Item>();
+        }
+
+        public Room move(Actions direction)
         {
             switch (direction)
             {
@@ -59,7 +121,7 @@ namespace MUD_Prototype_Mk1
 
         public string examine(string item)
         {
-            foreach (item thing in objects)
+            foreach (Item thing in objects)
             {
                 if(thing.name.Equals(item,StringComparison.OrdinalIgnoreCase))
                 {
@@ -69,9 +131,9 @@ namespace MUD_Prototype_Mk1
             return "You cannot look upon such a thing.";
         }
 
-        public item obtain(string item)
+        public Item obtain(string item)
         {
-            foreach (item thing in objects)
+            foreach (Item thing in objects)
             {
                 if (thing.name.Equals(item, StringComparison.OrdinalIgnoreCase))
                 {

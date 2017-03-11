@@ -47,8 +47,9 @@ namespace MUD_Prototype_Mk1
         Get,
         Examine,
         Help,
-        checkInv,
-        save
+        CheckInv,
+        Save,
+        Talk,
     }
     public class Player : Creature
     {
@@ -62,12 +63,29 @@ namespace MUD_Prototype_Mk1
             Inventory = new List<Item>();
         }
     }
+
+    public class NPC : Creature
+    {
+        public string dialouge;
+
+        public NPC() : this("Person","")
+        {
+
+        }
+
+        public NPC(string name, string dialouge) : base(name,100,10)
+        {
+            this.dialouge = dialouge;
+        }
+    }
+
     public class Item
     {
         public string name;
         public string description;
         public bool obtainable;
         public string AttemptMessage;
+        public string roomDescription;
 
         public Item()
         {
@@ -85,11 +103,13 @@ namespace MUD_Prototype_Mk1
     {
         public string name;
         public string description;
+        public string originaldescription;
         public Room n;
         public Room s;
         public Room w;
         public Room e;
         public List<Item> objects;
+        public List<NPC> NPCs;
 
         public Room()
         {
@@ -99,7 +119,9 @@ namespace MUD_Prototype_Mk1
         {
             this.name = name;
             this.description = description;
+            this.originaldescription = description;
             this.objects = new List<Item>();
+            this.NPCs = new List<NPC>();    
         }
 
         public Room move(Actions direction)
@@ -140,6 +162,7 @@ namespace MUD_Prototype_Mk1
                     if (thing.obtainable)
                     {
                         Program.write(ConsoleColor.Green, thing.AttemptMessage);
+                        this.objects.Remove(thing);
                         return thing;
                     }else
                     {
@@ -150,6 +173,45 @@ namespace MUD_Prototype_Mk1
             }
             Program.write(ConsoleColor.Red, "You cannot look upon such a thing.");
             return null;
+        }
+
+        public string[] getNPCNames()
+        {
+            if(NPCs.Count == 0)
+            {
+                return null;
+            }
+            string[] names = new string[this.NPCs.Count];
+            for(int i = 0; i < names.Length; i++)
+            {
+                names[i] = NPCs[i].name;
+            }
+            return names;
+        }
+
+        public string getNPCDialogue(string npc)
+        {
+            foreach(NPC person in this.NPCs)
+            {
+                if (string.Equals(person.name, npc, StringComparison.OrdinalIgnoreCase))
+                {
+                    return person.dialouge;
+                }
+            }
+            Program.write(ConsoleColor.Red, "No such person is in the room");
+            return null;
+        }
+
+        public void updateDescription()
+        {
+            this.description = this.originaldescription;
+            foreach(Item item in this.objects)
+            {
+                if (!String.IsNullOrEmpty(item.roomDescription))
+                {
+                    this.description += item.roomDescription;
+                }
+            }
         }
     }
 }

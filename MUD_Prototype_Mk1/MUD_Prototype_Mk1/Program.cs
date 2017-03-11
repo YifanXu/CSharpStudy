@@ -26,11 +26,13 @@ namespace MUD_Prototype_Mk1
                 {"help", Actions.Help },
                 {"get", Actions.Get },
                 {"obtain", Actions.Get },
-                {"inv", Actions.checkInv },
-                {"inventory", Actions.checkInv },
-                {"quit", Actions.save },
-                {"exit", Actions.save },
-                {"save", Actions.save }
+                {"inv", Actions.CheckInv },
+                {"inventory", Actions.CheckInv },
+                {"quit", Actions.Save },
+                {"exit", Actions.Save },
+                {"save", Actions.Save },
+                {"talkto", Actions.Talk },
+                {"interact", Actions.Talk }
             }; 
             Dictionary<string, Actions> moveCommands = new Dictionary<string, Actions>(StringComparer.OrdinalIgnoreCase){
                 {"n", Actions.North },
@@ -113,7 +115,28 @@ namespace MUD_Prototype_Mk1
 
                     case Actions.Look:
                         write(ConsoleColor.Green, current.name);
-                        write(ConsoleColor.Cyan, current.description);
+                        write(ConsoleColor.White, current.description);
+                        string[] names = current.getNPCNames();
+                        if (names == null)
+                        {
+                            write(ConsoleColor.Cyan, "You are the only person here.");
+                        }
+                        else
+                        {
+                            write(ConsoleColor.Cyan, "People that are with you include: ");
+                            foreach (string name in names)
+                            {
+                                write(ConsoleColor.Cyan, name);
+                            }
+                        }
+                        break;
+
+                    case Actions.Talk:
+                        string dialouge = current.getNPCDialogue(parameter);
+                        if (!string.IsNullOrEmpty(dialouge))
+                        {
+                            write(ConsoleColor.Cyan, String.Format("{0} says '{1}'",parameter,dialouge));
+                        }
                         break;
 
                     case Actions.Help:
@@ -125,16 +148,17 @@ namespace MUD_Prototype_Mk1
                         if(thing != null)
                         {
                             player.Inventory.Add(thing);
+                            current.updateDescription();
                         }
                         break;
-                    case Actions.checkInv:
+                    case Actions.CheckInv:
                         write(ConsoleColor.Cyan, "You inventory contains:");
                         foreach(Item invItem in player.Inventory)
                         {
                             write(ConsoleColor.Cyan, invItem.name);
                         }
                         break;
-                    case Actions.save:
+                    case Actions.Save:
                         var seralizer = new XmlSerializer(typeof (Player));
                         using(Stream s = new FileStream(path.playerSave,FileMode.Create,FileAccess.Write))
                         {
@@ -178,15 +202,25 @@ namespace MUD_Prototype_Mk1
                 {
                     parameters = input[line].Split('|');
                     rooms[rooms.Count - 1].objects.Add(new Item(parameters[2], parameters[3], parameters[5]));
-                    if(parameters[4] == "Y")
+                    Item currentItem = rooms[rooms.Count - 1].objects[Int32.Parse(parameters[1])];
+                    if (parameters[4] == "Y")
                     {
-                        rooms[rooms.Count - 1].objects[Int32.Parse(parameters[1])].obtainable = true;
-                    }else
+                        currentItem.obtainable = true;
+                        currentItem.roomDescription = parameters[6];
+                    }
+                    else
                     {
-                        rooms[rooms.Count - 1].objects[Int32.Parse(parameters[1])].obtainable = false;
+                        currentItem.obtainable = false;
                     }
                     line++;
                 }
+                while(input[line][0] == 'N')
+                {
+                    parameters = input[line].Split('|');
+                    rooms[rooms.Count - 1].NPCs.Add(new NPC(parameters[2], parameters[3]));
+                    line++;
+                }
+                rooms[rooms.Count - 1].updateDescription();
             }
             line++;
             while (line < input.Length)

@@ -14,11 +14,16 @@ namespace MUD_Prototype_Mk1
         public string name;
         public int Health;
         public int damage;
-        public Creature(string name, int health, int damage)
+        public int speed;
+        public double resistence;
+        public int standing;
+        public Creature(string name, int health, int damage, double resistence, int standing)
         {
             this.name = name;
             this.Health = health;
             this.damage = damage;
+            this.resistence = resistence;
+            this.standing = standing;
         }
     }
 
@@ -50,18 +55,36 @@ namespace MUD_Prototype_Mk1
         CheckInv,
         Save,
         Talk,
+        Attack,
+        RepeatAttack,
     }
     public class Player : Creature
     {
+        public int position;
         //[XmlArray("PersonenArray")]
         public List<Item> Inventory;
 
         public Player() : this("Player") { }
 
-        public Player(string name) : base (name,1000,100)
+        public Player(string name) : base (name,1000,100,0,0)
         {
             Inventory = new List<Item>();
+            position = 0;
         }
+
+        public void DropItems(Room current)
+        {
+            Random r = new Random();
+            foreach (Item item in this.Inventory)
+            {
+                if(r.Next(2) == 1)
+                {
+                    current.objects.Add(item);
+                }
+            }
+            this.Inventory.RemoveRange(0, this.Inventory.Count);
+        }
+
     }
 
     public class NPC : Creature
@@ -73,7 +96,7 @@ namespace MUD_Prototype_Mk1
 
         }
 
-        public NPC(string name, string dialouge) : base(name,100,10)
+        public NPC(string name, string dialouge) : base(name,1000,10,0.1,2)
         {
             this.dialouge = dialouge;
         }
@@ -102,14 +125,30 @@ namespace MUD_Prototype_Mk1
     public class Room
     {
         public string name;
-        public string description;
-        public string originaldescription;
+        public int ID;
+        private string originalDescription;
         public Room n;
         public Room s;
         public Room w;
         public Room e;
         public List<Item> objects;
         public List<NPC> NPCs;
+
+        public string description
+        {
+            get
+            {
+                string actualDescription = this.originalDescription;
+                foreach (Item item in this.objects)
+                {
+                    if (!String.IsNullOrEmpty(item.roomDescription))
+                    {
+                        actualDescription += item.roomDescription;
+                    }
+                }
+                return actualDescription;
+            }
+        }
 
         public Room()
         {
@@ -118,8 +157,7 @@ namespace MUD_Prototype_Mk1
         public Room (string name, string description)
         {
             this.name = name;
-            this.description = description;
-            this.originaldescription = description;
+            this.originalDescription = description;
             this.objects = new List<Item>();
             this.NPCs = new List<NPC>();    
         }
@@ -191,27 +229,57 @@ namespace MUD_Prototype_Mk1
 
         public string getNPCDialogue(string npc)
         {
-            foreach(NPC person in this.NPCs)
-            {
-                if (string.Equals(person.name, npc, StringComparison.OrdinalIgnoreCase))
-                {
-                    return person.dialouge;
-                }
-            }
+            string dialouge = this.getNPC(npc).dialouge;
             Program.write(ConsoleColor.Red, "No such person is in the room");
             return null;
         }
 
-        public void updateDescription()
+        public NPC getNPC(string npc)
         {
-            this.description = this.originaldescription;
-            foreach(Item item in this.objects)
+            foreach (NPC person in this.NPCs)
             {
-                if (!String.IsNullOrEmpty(item.roomDescription))
+                if (string.Equals(person.name, npc, StringComparison.OrdinalIgnoreCase))
                 {
-                    this.description += item.roomDescription;
+                    return person;
                 }
             }
+            Program.write(ConsoleColor.Red,"Such entity does not exist.");
+            return null;
+        }
+
+        public List<NPC> angryNPCs
+        {
+            get
+            {
+                List<NPC> angryNPCs = new List<NPC>();
+                foreach (NPC npc in this.NPCs)
+                {
+                    if (npc.standing <= -2)
+                    {
+                        angryNPCs.Add(npc);
+                    }
+                }
+                return angryNPCs;
+            }
+        }
+    }
+
+    public class SpawnRoom : Room
+    {
+
+        public SpawnRoom (string name, string description) : base(name, description)
+        {
+
+        }
+        public SpawnRoom () : base()
+        {
+
+        }
+
+        public virtual NPC getNPC(string npc)
+        {
+            Program.write(ConsoleColor.Red, "You cannot attack anyone in your spawn room.");
+            return null;
         }
     }
 }

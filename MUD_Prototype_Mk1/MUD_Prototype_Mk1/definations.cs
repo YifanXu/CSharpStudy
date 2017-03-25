@@ -89,16 +89,29 @@ namespace MUD_Prototype_Mk1
 
     public class NPC : Creature
     {
-        public string dialouge;
+        private string positiveDialouge;
+        private string negativeDialouge;
+        public string dialouge
+        {
+            get
+            {
+                if(standing > 0)
+                {
+                    return positiveDialouge;
+                }
+                return negativeDialouge;
+            }
+        }
 
-        public NPC() : this("Person","")
+        public NPC() : this("Person","","")
         {
 
         }
 
-        public NPC(string name, string dialouge) : base(name,1000,10,0.1,2)
+        public NPC(string name, string positiveDialouge, string negativeDialogue) : base(name,1000,10,0.1,2)
         {
-            this.dialouge = dialouge;
+            this.positiveDialouge = positiveDialouge;
+            this.negativeDialouge = negativeDialogue;
         }
     }
 
@@ -230,7 +243,13 @@ namespace MUD_Prototype_Mk1
         public string getNPCDialogue(string npc)
         {
             string dialouge = this.getNPC(npc).dialouge;
-            Program.write(ConsoleColor.Red, "No such person is in the room");
+            if (dialouge == null)
+            {
+                Program.write(ConsoleColor.Red, "No such person is in the room");
+            }else
+            {
+                Program.write(ConsoleColor.Cyan, dialouge);
+            }
             return null;
         }
 

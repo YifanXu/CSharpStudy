@@ -108,6 +108,9 @@ namespace MUD_Prototype_Mk1
                                 write(ConsoleColor.Green, current.name);
                                 Console.WriteLine(current.description);
                                 write(ConsoleColor.Yellow, "Type in your action");
+                            }else
+                            {
+                                write(ConsoleColor.Red, "You cannot move in that direction");
                             }
                         }
 
@@ -219,7 +222,6 @@ namespace MUD_Prototype_Mk1
                             }
                         }
                         break;
-                        break;
                 }
                 foreach(NPC angryNPC in current.angryNPCs)
                 {
@@ -287,7 +289,7 @@ namespace MUD_Prototype_Mk1
                 while(input[line][0] == 'N')
                 {
                     parameters = input[line].Split('|');
-                    rooms[rooms.Count - 1].NPCs.Add(new NPC(parameters[2], parameters[3]));
+                    rooms[rooms.Count - 1].NPCs.Add(new NPC(parameters[2], parameters[3],parameters[4]));
                     line++;
                 }
             }
@@ -348,8 +350,9 @@ namespace MUD_Prototype_Mk1
             write(ConsoleColor.Red, string.Format("Seeing you as an enemy, {1} suddenly attacked you for {0} damage.", damage, npc.name));
             if (player.Health > 0)
             {
+                damage = (int)((double)player.damage * (1 - npc.resistence));
                 write(ConsoleColor.Green,string.Format("You attempted an counterattck on {1} and dealt {0} damage.", damage, npc.name));
-                player.Health -= (int)((double)npc.damage * (1 - player.resistence) * counterAttackFactor);
+                npc.Health -= damage;
             }
             else
             {

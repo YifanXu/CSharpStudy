@@ -3,6 +3,7 @@ using System.IO;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Serialization;
@@ -10,12 +11,16 @@ using System.Xml.Serialization;
 namespace MUD_Prototype_Mk1
 {
      
+
     class Program
     {
+        public static Room current;
+        public static List<RunningNPC> Runningboys = new List<RunningNPC>();
         public string savePath = "data" + Path.DirectorySeparatorChar + "saveFile";
         public const double counterAttackFactor = 0.7;
         static void Main(string[] args)
         {
+            Thread runNPC = new Thread(MoveNPC);
             Dictionary<string, Actions> Command = new Dictionary<string, Actions>(StringComparer.OrdinalIgnoreCase)
             {
                 {"move", Actions.Move},
@@ -38,15 +43,15 @@ namespace MUD_Prototype_Mk1
                 {"RepeatAttack", Actions.RepeatAttack },
                 {"Bang", Actions.RepeatAttack}
             }; 
-            Dictionary<string, Actions> moveCommands = new Dictionary<string, Actions>(StringComparer.OrdinalIgnoreCase){
-                {"n", Actions.North },
-                {"north", Actions.North },
-                {"s", Actions.South },
-                {"south", Actions.South },
-                {"w", Actions.West },
-                {"west", Actions.West },
-                {"e", Actions.East },
-                {"east", Actions.East }
+            Dictionary<string, Direction> moveCommands = new Dictionary<string, Direction>(StringComparer.OrdinalIgnoreCase){
+                {"n", Direction.North },
+                {"north", Direction.North },
+                {"s", Direction.South },
+                {"south", Direction.South },
+                {"w", Direction.West },
+                {"west", Direction.West },
+                {"e", Direction.East },
+                {"east", Direction.East }
             };
             var path = new Paths();
 
@@ -69,13 +74,16 @@ namespace MUD_Prototype_Mk1
                     player = (Player) seralizer.Deserialize(s);
                 }
             }
-            Room current;
             Room entrance = ReadFile(path.defaultMap,player.position, out current);
-            
+            runNPC.Start();
 
             write(ConsoleColor.Green, current.name);
             Console.WriteLine(current.description);
+            
             write(ConsoleColor.Yellow, "Type in your action");
+
+            
+            
             while (true)
             {
                 input = Console.ReadLine();
@@ -94,7 +102,7 @@ namespace MUD_Prototype_Mk1
                 switch (act)
                 {
                     case Actions.Move:
-                        Actions dir;
+                        Direction dir;
                         if (!moveCommands.TryGetValue(parameter, out dir))
                         {
                             write(ConsoleColor.Red, "Invalid Paremeter");
@@ -253,6 +261,48 @@ namespace MUD_Prototype_Mk1
             write(ConsoleColor.Green, "'move + direction' to move (ex. move east)\n'examine+object' to get details on an object (ex. examine rock)\n'look'to get the room description");
         }
 
+        public static void MoveNPC()
+        {
+            Random r = new Random();
+            while (true)
+            {
+                foreach(RunningNPC person in Runningboys)
+                {
+                    lock (person)
+                    {
+                        if (r.Next(100 / person.stamina) == 0)
+                        {
+                            for (int i = 0; i < 50; i++)
+                            {
+
+                                Direction movingDirection = (Direction)r.Next(4);
+                                if (person.currentRoom.connectingRooms[movingDirection] != null)
+                                {
+                                    Room destoRoom = person.currentRoom.connectingRooms[movingDirection];
+                                    if (current == person.currentRoom)
+                                    {
+                                        write(ConsoleColor.Yellow, String.Format("{0} has entered the area.", person.name));
+                                    }
+
+                                    destoRoom.NPCs.Add(person);
+                                    person.currentRoom.NPCs.Remove(person);
+                                    person.currentRoom = destoRoom;
+
+
+                                    if (current == person.currentRoom)
+                                    {
+                                        write(ConsoleColor.Yellow, String.Format("{0} has left the area.", person.name));
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+                Thread.Sleep(2000);
+            }
+        }
+
         public static Room ReadFile(string path, int position, out Room current)
         {
             current = new Room();
@@ -289,7 +339,16 @@ namespace MUD_Prototype_Mk1
                 while(input[line][0] == 'N')
                 {
                     parameters = input[line].Split('|');
-                    rooms[rooms.Count - 1].NPCs.Add(new NPC(parameters[2], parameters[3],parameters[4]));
+                    if (input[line].StartsWith("NM"))
+                    {
+                        RunningNPC runningboi = new RunningNPC(parameters[2], parameters[3], parameters[4], int.Parse(parameters[5]), rooms[rooms.Count - 1]);
+                        rooms[rooms.Count - 1].NPCs.Add(runningboi);
+                        Runningboys.Add(runningboi);
+                    }
+                    else
+                    {
+                        rooms[rooms.Count - 1].NPCs.Add(new NPC(parameters[2], parameters[3], parameters[4]));
+                    }
                     line++;
                 }
             }
@@ -302,16 +361,16 @@ namespace MUD_Prototype_Mk1
                 switch (parameters[1])
                 {
                     case "E":
-                        rooms[originRoom].e = rooms[destoRoom];
+                        rooms[originRoom].connectingRooms[Direction.East] = rooms[destoRoom];
                         break;
                     case "W":
-                        rooms[originRoom].w = rooms[destoRoom];
+                        rooms[originRoom].connectingRooms[Direction.West] = rooms[destoRoom];
                         break;
                     case "N":
-                        rooms[originRoom].n = rooms[destoRoom];
+                        rooms[originRoom].connectingRooms[Direction.North] = rooms[destoRoom];
                         break;
                     case "S":
-                        rooms[originRoom].s = rooms[destoRoom];
+                        rooms[originRoom].connectingRooms[Direction.South] = rooms[destoRoom];
                         break;
                 }
                 line++;

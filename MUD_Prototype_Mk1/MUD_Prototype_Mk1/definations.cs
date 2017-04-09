@@ -58,6 +58,15 @@ namespace MUD_Prototype_Mk1
         Attack,
         RepeatAttack,
     }
+
+    public enum Direction
+    {
+        North,
+        South,
+        East,
+        West
+    }
+
     public class Player : Creature
     {
         public int position;
@@ -115,6 +124,20 @@ namespace MUD_Prototype_Mk1
         }
     }
 
+    public class RunningNPC : NPC
+    {
+        public int stamina;
+        public readonly int maxStamina;
+        public Room currentRoom;
+        
+        public RunningNPC (string name, string positiveDialouge, string negativeDialogue, int stamina, Room currentRoom) : base(name, positiveDialouge, negativeDialogue)
+        {
+            this.stamina = stamina;
+            this.maxStamina = stamina;
+            this.currentRoom = currentRoom;
+        }
+    }
+
     public class Item
     {
         public string name;
@@ -146,6 +169,7 @@ namespace MUD_Prototype_Mk1
         public Room e;
         public List<Item> objects;
         public List<NPC> NPCs;
+        public Dictionary<Direction, Room> connectingRooms;
 
         public string description
         {
@@ -172,24 +196,19 @@ namespace MUD_Prototype_Mk1
             this.name = name;
             this.originalDescription = description;
             this.objects = new List<Item>();
-            this.NPCs = new List<NPC>();    
+            this.NPCs = new List<NPC>();
+            this.connectingRooms = new Dictionary<Direction, Room>()
+            {
+                {Direction.North, null},
+                {Direction.South, null},
+                {Direction.West, null },
+                {Direction.East, null }
+            };
         }
 
-        public Room move(Actions direction)
+        public Room move(Direction direction)
         {
-            switch (direction)
-            {
-                case Actions.North:
-                    return this.n;
-                case Actions.South:
-                    return this.s;
-                case Actions.West:
-                    return this.w;
-                case Actions.East:
-                    return this.e;
-                default:
-                    return null;
-            }
+            return this.connectingRooms[direction];
         }
 
         public string examine(string item)
@@ -295,10 +314,10 @@ namespace MUD_Prototype_Mk1
 
         }
 
-        public virtual NPC getNPC(string npc)
-        {
-            Program.write(ConsoleColor.Red, "You cannot attack anyone in your spawn room.");
-            return null;
-        }
+        //public override NPC getNPC(string npc)
+        //{
+        //    Program.write(ConsoleColor.Red, "You cannot attack anyone in your spawn room.");
+        //    return null;
+        //}
     }
 }

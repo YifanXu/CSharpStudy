@@ -1,0 +1,35 @@
+R|0|Cave|This is the place you woke up. Glancing your surroundings, you can see a tunnel leading east.
+I|0|Rock|A small natural stone with some next texture, might come in handy.|Y|You picked up the rock.| Also, there is a small sharp rock lying on the ground.
+I|1|Tunnel|Darkness surround your only exit, will you take it?|N|Why are you trying to pick up a tunnel?
+R|1|Tunnel|You are in a smooth tunnel, so smooth that you might fall. You can only blackness to the east and the west.
+R|2|Cave Entrance|A cave entrance with a tunnel leading west, and a dirt path to the forest. A castle can be seen in the distance.
+NM|0|Thief|I am not going to bother with a poor boy like you.|Come here, you are easier to rob when you are dead!|30
+I|0|Castle|A medieval looking castle is off the the distance to the east. Looks like a small walk to get there.|N|It's too far away and too large.
+R|3|Forest Path|You find yourself at a point with path leading north, west, and east... 
+I|0|Apple|The apple is in the proccess of rotting away, and it's certainly not edible.|Y|You picked up the apple, for whatever reason.|You also find an apple at your feet.
+I|1|path|It's A path made of gravel.|N|You cannot pick it up
+N|0|Resting Traveler|Hello! I am just passing by. The roads had made me tired, and I need to rest here.|Would you leave me alone?!!!?! Go away, I just want to rest.
+R|4|Northern Path|You see a small hut to your east, and path to the north and south.
+I|0|path|It's A path made of gravel.|N|You cannot pick it up
+R|5|Hut|An abandoned hut, with nobody inside. It has been left to time for a while now. 
+I|0|Water bottle|The water bottle looks fresh and the water inside seems pure and refreshing.|Y|You picked up the water bottle.|Inside, you can see a water bottle.
+I|1|Chest|You open the chest with all of your strength, but you found nothing inside. It seems to be working.|N|The chest is too heavy to carry.
+I|2|Pen|The pen looks unused. After some testing, you confirmed that it is still working.|Y|You picked up the pen.|There is also a pen lying on a table.
+I|3|Table|An old wooden table, left for time to dismantle it.|N|The table is too heavy to lift and carry.
+R|6|Eastern Path|You can see a large medieval castle to the east, and a path lies you between you and the castle. Alternatively, you can take the path to west.
+I|0|Castle|A medieval looking castle is off the the distance to the east. Looks like a small walk to get there.|N|It's too far away and too large.
+I|1|path|It's A path made of gravel.|N|You cannot pick it up
+R|7|Castle Drawbridge|A wooden bridge, suspended by chains. It seems like the bridge is unused for quite a long time now.|N|You cannot pick up a drawbridge.
+END
+0|E|1
+1|W|0
+1|E|2
+2|W|1
+2|E|3
+3|W|2
+3|N|4
+4|S|3
+4|E|5
+5|W|4
+3|E|6
+6|W|3

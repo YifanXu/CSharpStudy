@@ -6,11 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MUD_Prototype_Mk1", "MUD_Prototype_Mk1\MUD_Prototype_Mk1.csproj", "{5BCF2418-FF6B-4303-A707-09E6225EE2BB}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{47020BFE-3F8D-4D7B-AF42-833E475D3069}"
-	ProjectSection(SolutionItems) = preProject
-		MUD_Prototype_Mk1\bin\Debug\data\defaultMap.txt = MUD_Prototype_Mk1\bin\Debug\data\defaultMap.txt
-		MUD_Prototype_Mk1\bin\Debug\data\playerSaveFile = MUD_Prototype_Mk1\bin\Debug\data\playerSaveFile
-		MUD_Prototype_Mk1\bin\Debug\data\saveMapFile.txt = MUD_Prototype_Mk1\bin\Debug\data\saveMapFile.txt
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

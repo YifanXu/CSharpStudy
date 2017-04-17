@@ -1,0 +1,11 @@
+<?xml version="1.0"?>
+<Player xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <name>Player</name>
+  <Health>911</Health>
+  <damage>100</damage>
+  <speed>0</speed>
+  <resistence>0</resistence>
+  <standing>0</standing>
+  <position>3</position>
+  <Inventory />
+</Player>

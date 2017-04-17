@@ -41,7 +41,8 @@ namespace MUD_Prototype_Mk1
                 {"attack", Actions.Attack },
                 {"assault", Actions.Attack },
                 {"RepeatAttack", Actions.RepeatAttack },
-                {"Bang", Actions.RepeatAttack}
+                {"Bang", Actions.RepeatAttack},
+                {"Exits", Actions.exits}
             }; 
             Dictionary<string, Direction> moveCommands = new Dictionary<string, Direction>(StringComparer.OrdinalIgnoreCase){
                 {"n", Direction.North },
@@ -230,6 +231,16 @@ namespace MUD_Prototype_Mk1
                             }
                         }
                         break;
+                    case Actions.exits:
+                        write(ConsoleColor.Cyan, "Exits avaliable are:");
+                        foreach (KeyValuePair<Direction, Room> pair in current.connectingRooms)
+                        {
+                            if(pair.Value != null)
+                            {
+                                write(ConsoleColor.Cyan, String.Format(" - {0} : {1}", pair.Key.ToString(), pair.Value.name));
+                            }
+                        }
+                        break;
                 }
                 foreach(NPC angryNPC in current.angryNPCs)
                 {
@@ -266,32 +277,32 @@ namespace MUD_Prototype_Mk1
             Random r = new Random();
             while (true)
             {
-                foreach(RunningNPC person in Runningboys)
+                foreach(RunningNPC entity in Runningboys)
                 {
-                    lock (person)
+                    lock (entity)
                     {
-                        if (r.Next(100 / person.stamina) == 0)
+                        if (r.Next(100 / entity.stamina) == 0)
                         {
                             for (int i = 0; i < 50; i++)
                             {
 
                                 Direction movingDirection = (Direction)r.Next(4);
-                                if (person.currentRoom.connectingRooms[movingDirection] != null)
+                                if (entity.currentRoom.connectingRooms[movingDirection] != null)
                                 {
-                                    Room destoRoom = person.currentRoom.connectingRooms[movingDirection];
-                                    if (current == person.currentRoom)
+                                    Room destoRoom = entity.currentRoom.connectingRooms[movingDirection];
+                                    if (current == entity.currentRoom)
                                     {
-                                        write(ConsoleColor.Yellow, String.Format("{0} has entered the area.", person.name));
+                                        write(ConsoleColor.Yellow, String.Format("{0} has entered the area.", entity.name));
                                     }
 
-                                    destoRoom.NPCs.Add(person);
-                                    person.currentRoom.NPCs.Remove(person);
-                                    person.currentRoom = destoRoom;
+                                    destoRoom.NPCs.Add(entity);
+                                    entity.currentRoom.NPCs.Remove(entity);
+                                    entity.currentRoom = destoRoom;
 
 
-                                    if (current == person.currentRoom)
+                                    if (current == entity.currentRoom)
                                     {
-                                        write(ConsoleColor.Yellow, String.Format("{0} has left the area.", person.name));
+                                        write(ConsoleColor.Yellow, String.Format("{0} has left the area.", entity.name));
                                     }
                                     break;
                                 }

@@ -57,6 +57,7 @@ namespace MUD_Prototype_Mk1
         Talk,
         Attack,
         RepeatAttack,
+        exits
     }
 
     public enum Direction
@@ -163,10 +164,6 @@ namespace MUD_Prototype_Mk1
         public string name;
         public int ID;
         private string originalDescription;
-        public Room n;
-        public Room s;
-        public Room w;
-        public Room e;
         public List<Item> objects;
         public List<NPC> NPCs;
         public Dictionary<Direction, Room> connectingRooms;

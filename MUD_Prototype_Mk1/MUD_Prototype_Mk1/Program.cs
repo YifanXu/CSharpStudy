@@ -152,7 +152,7 @@ namespace MUD_Prototype_Mk1
                         string dialouge = current.getNPCDialogue(parameter);
                         if (!string.IsNullOrEmpty(dialouge))
                         {
-                            write(ConsoleColor.Cyan, String.Format("{0} says '{1}'",parameter,dialouge));
+                            write(ConsoleColor.Cyan, String.Format("The person says '{1}'",parameter,dialouge));
                         }
                         break;
 

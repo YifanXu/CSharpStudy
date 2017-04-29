@@ -28,7 +28,7 @@ namespace Maze_Land
                 return;
             }
 
-            solver.route.Add(new MapNode(solver.x, solver.y));
+            solver.route.Push(new MapNode(solver.x, solver.y));
             while (true)
             {
                 map.DrawMap(solver);
@@ -40,11 +40,12 @@ namespace Maze_Land
                 }
                 else if(map[solver.y,solver.x] == MapTile.Exit)
                 {
+                    Console.WriteLine();
                     Write(ConsoleColor.Green, "AI Found the Exit!");
                     SpaceCheck();
                     break;
                 }
-                System.Threading.Thread.Sleep(1000);
+                System.Threading.Thread.Sleep(200);
             }
         }
 

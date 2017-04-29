@@ -258,15 +258,13 @@ namespace MUD_Prototype_Mk1
 
         public string getNPCDialogue(string npc)
         {
-            string dialouge = this.getNPC(npc).dialouge;
-            if (dialouge == null)
+			NPC person = this.getNPC (npc);
+            if (person == null)
             {
                 Program.write(ConsoleColor.Red, "No such person is in the room");
-            }else
-            {
-                Program.write(ConsoleColor.Cyan, dialouge);
+				return null;
             }
-            return null;
+            return person.dialouge;
         }
 
         public NPC getNPC(string npc)

@@ -193,6 +193,9 @@ namespace MUD_Prototype_Mk1
                             if(target.Health <= 0)
                             {
                                 current.NPCs.Remove(target);
+								if (target is RunningNPC) {
+									
+								}
                             }
                             else if(player.Health <= 0)
                             {

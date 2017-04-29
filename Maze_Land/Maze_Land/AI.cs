@@ -11,7 +11,7 @@ namespace Maze_Land
     {
         public int x;
         public int y;
-        public List<MapNode> route;
+        public Stack<MapNode> route;
         private int newX;
         private int newY;
         private readonly List<MapTile> ValidTile = new List<MapTile>()
@@ -37,7 +37,7 @@ namespace Maze_Land
 
         public AI()
         {
-            this.route = new List<MapNode>();
+            this.route = new Stack<MapNode>();
         }
 
         public AI(int x, int y)
@@ -46,7 +46,7 @@ namespace Maze_Land
             this.newX = x;
             this.y = y;
             this.newY = y;
-            this.route = new List<MapNode>();
+            this.route = new Stack<MapNode>();
         }
 
         public bool Operate(Map map)
@@ -59,10 +59,10 @@ namespace Maze_Land
                 {
                     return false;
                 }
-                route.RemoveAt(route.Count - 1);
-                this.x = route[route.Count - 1].x;
-                this.y = route[route.Count - 1].y;
-                route[route.Count - 1].checkNext = NextDirection[route[route.Count - 1].checkNext];
+                route.Pop();
+                this.x = route.Peek().x;
+                this.y = route.Peek().y;
+                route.Peek().checkNext = NextDirection[route.Peek().checkNext];
             }
             return true;
         }
@@ -70,26 +70,22 @@ namespace Maze_Land
         //Attempts to find exits from current block. Returns true if succeeds and automatically move there.
         private bool FindExit(Map map)
         {
-            Direction checkNext = route[route.Count - 1].checkNext;
             //while(the block of direction is not walkable or that direction is where the AI came from)
-            while (!CheckBlock(map, checkNext) || (route.Count > 1 && OppositeDirections[checkNext] == route[route.Count - 2].checkNext)){
-                route[route.Count - 1].checkNext = NextDirection[checkNext];
-                checkNext = route[route.Count - 1].checkNext;
-                if (route[route.Count - 1].checkNext == Direction.None)
+            while (!CheckBlock(map, route.Peek().checkNext) || IfInLoop(newX, newY)){
+                if (route.Peek().checkNext == Direction.None)
+                {
+                    return false;
+                }
+                route.Peek().checkNext = NextDirection[route.Peek().checkNext];
+                if (route.Peek().checkNext == Direction.None)
                 {
                     return false;
                 }
             }
             this.x = newX;
             this.y = newY;
-            route.Add(new MapNode(x, y));
+            route.Push(new MapNode(x, y));
 
-            //Anti-Loop Mechanism
-            int routeLoopStart;
-            if (IfInLoop(out routeLoopStart))
-            {
-
-            }
             return true;
         }
 
@@ -126,6 +122,7 @@ namespace Maze_Land
         }
 
         //Check if the AI has stepped into a block it has previously stepped into (aka LOOP)
+<<<<<<< HEAD
         private bool IfInLoop(out int routeSequence)
 		{
 			for (int i = 0; i < route.Count; i++) {
@@ -137,5 +134,19 @@ namespace Maze_Land
 			routeSequence = 0;
 			return false;
 		}
+=======
+        private bool IfInLoop(int newx, int newy)
+        {
+            MapNode[] pastRoute = route.ToArray();
+            for (int i = 0; i < route.Count - 1; i++)
+            {
+                if (newx == pastRoute[i].x && newy == pastRoute[i].y)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+>>>>>>> 6722f27e0f12ad49ca8865d0949d7a037d406ddc
     }
 }

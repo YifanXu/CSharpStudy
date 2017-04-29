@@ -93,12 +93,6 @@ namespace Maze_Land
                 }
                 Console.WriteLine();
             }
-            Console.Write("                                 ");
-            Console.SetCursorPosition(0, Console.CursorTop);
-            foreach (MapNode node in solver.route)
-            {
-                Console.Write(node.checkNext.ToString() + ",");
-            }
         }
 
         private void DrawBlock(ConsoleColor color)

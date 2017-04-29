@@ -1,10 +1,13 @@
-XXXXXXXXXX
-XA       X
-X        X
-X        X
-X        X
-X        X
-X    B   X
-X        X
-X        X
-XXXXXXXXXX
+XXXXXXXXXXXXX
+XAo   o   o X
+X o o   o   X
+X o o ooooooX
+X           X
+Xooo  o  oooX
+X     o     X
+X  oooooo o X
+X  o oo   o X
+X    oB o o X
+X  ooooooo  X
+X          oX
+XXXXXXXXXXXXX

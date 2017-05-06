@@ -89,7 +89,7 @@ namespace MUD_Prototype_Mk1
             {
                 if(r.Next(2) == 1)
                 {
-                    current.objects.Add(item);
+                    current.Objects.Add(item);
                 }
             }
             this.Inventory.RemoveRange(0, this.Inventory.Count);
@@ -159,21 +159,23 @@ namespace MUD_Prototype_Mk1
             this.AttemptMessage = AttemptMessage;
         }
     }
-    public class Room
+    public class Room : IRoom
     {
-        public string name;
-        public int ID;
+        public string Name { get; }
+        public int ID { get; }
         private string originalDescription;
-        public List<Item> objects;
-        public List<NPC> NPCs;
-        public Dictionary<Direction, Room> connectingRooms;
+        public List<Item> Objects { get; set; }
+        public List<NPC> NPCs { get; set; }
+        public Dictionary<Direction, Room> ConnectingRooms { get;}
+
+
 
         public string description
         {
             get
             {
                 string actualDescription = this.originalDescription;
-                foreach (Item item in this.objects)
+                foreach (Item item in this.Objects)
                 {
                     if (!String.IsNullOrEmpty(item.roomDescription))
                     {
@@ -190,11 +192,11 @@ namespace MUD_Prototype_Mk1
 
         public Room (string name, string description)
         {
-            this.name = name;
+            this.Name = name;
             this.originalDescription = description;
-            this.objects = new List<Item>();
+            this.Objects = new List<Item>();
             this.NPCs = new List<NPC>();
-            this.connectingRooms = new Dictionary<Direction, Room>()
+            this.ConnectingRooms = new Dictionary<Direction, Room>()
             {
                 {Direction.North, null},
                 {Direction.South, null},
@@ -203,14 +205,14 @@ namespace MUD_Prototype_Mk1
             };
         }
 
-        public Room move(Direction direction)
+        public Room Move(Direction direction)
         {
-            return this.connectingRooms[direction];
+            return this.ConnectingRooms[direction];
         }
 
         public string examine(string item)
         {
-            foreach (Item thing in objects)
+            foreach (Item thing in Objects)
             {
                 if(thing.name.Equals(item,StringComparison.OrdinalIgnoreCase))
                 {
@@ -222,14 +224,14 @@ namespace MUD_Prototype_Mk1
 
         public Item obtain(string item)
         {
-            foreach (Item thing in objects)
+            foreach (Item thing in Objects)
             {
                 if (thing.name.Equals(item, StringComparison.OrdinalIgnoreCase))
                 {
                     if (thing.obtainable)
                     {
                         Program.write(ConsoleColor.Green, thing.AttemptMessage);
-                        this.objects.Remove(thing);
+                        this.Objects.Remove(thing);
                         return thing;
                     }else
                     {
@@ -297,6 +299,10 @@ namespace MUD_Prototype_Mk1
                 }
                 return angryNPCs;
             }
+        }
+
+        public virtual void ShowTravelInfo()
+        {
         }
     }
 

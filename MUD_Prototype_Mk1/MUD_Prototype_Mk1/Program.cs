@@ -10,7 +10,6 @@ using System.Xml.Serialization;
 
 namespace MUD_Prototype_Mk1
 {
-     
 
     class Program
     {
@@ -21,39 +20,6 @@ namespace MUD_Prototype_Mk1
         static void Main(string[] args)
         {
             Thread runNPC = new Thread(MoveNPC);
-            Dictionary<string, Actions> Command = new Dictionary<string, Actions>(StringComparer.OrdinalIgnoreCase)
-            {
-                {"move", Actions.Move},
-                {"go", Actions.Move},
-                {"look", Actions.Look},
-                {"examine", Actions.Examine },
-                {"ex", Actions.Examine },
-                {"help", Actions.Help },
-                {"get", Actions.Get },
-                {"obtain", Actions.Get },
-                {"inv", Actions.CheckInv },
-                {"inventory", Actions.CheckInv },
-                {"quit", Actions.Save },
-                {"exit", Actions.Save },
-                {"save", Actions.Save },
-                {"talkto", Actions.Talk },
-                {"interact", Actions.Talk },
-                {"attack", Actions.Attack },
-                {"assault", Actions.Attack },
-                {"RepeatAttack", Actions.RepeatAttack },
-                {"Bang", Actions.RepeatAttack},
-                {"Exits", Actions.exits}
-            }; 
-            Dictionary<string, Direction> moveCommands = new Dictionary<string, Direction>(StringComparer.OrdinalIgnoreCase){
-                {"n", Direction.North },
-                {"north", Direction.North },
-                {"s", Direction.South },
-                {"south", Direction.South },
-                {"w", Direction.West },
-                {"west", Direction.West },
-                {"e", Direction.East },
-                {"east", Direction.East }
-            };
             var path = new Paths();
 
             //Load Files?
@@ -76,9 +42,10 @@ namespace MUD_Prototype_Mk1
                 }
             }
             Room entrance = ReadFile(path.defaultMap,player.position, out current);
+            Act action = new Act(entrance);
             runNPC.Start();
 
-            write(ConsoleColor.Green, current.name);
+            write(ConsoleColor.Green, current.Name);
             Console.WriteLine(current.description);
             
             write(ConsoleColor.Yellow, "Type in your action");
@@ -88,160 +55,14 @@ namespace MUD_Prototype_Mk1
             while (true)
             {
                 input = Console.ReadLine();
-                Actions act;
-                while (string.IsNullOrEmpty(input) || !Command.TryGetValue(input.Split(' ')[0],out act))
-                {
-                    write(ConsoleColor.Red, "Invalid Input.");
-                    input = Console.ReadLine();
-                }
                 string command = input.Split(' ')[0];
                 string parameter = string.Empty;
                 if (command.Length != input.Length)
                 {
                     parameter = input.Substring(command.Length + 1);
                 }
-                switch (act)
-                {
-                    case Actions.Move:
-                        Direction dir;
-                        if (!moveCommands.TryGetValue(parameter, out dir))
-                        {
-                            write(ConsoleColor.Red, "Invalid Paremeter");
-                        }
-                        else
-                        {
-                            Room targetRoom = current.move(dir);
-                            if (targetRoom != null)
-                            {
-                                current = targetRoom;
-                                write(ConsoleColor.Green, current.name);
-                                Console.WriteLine(current.description);
-                                write(ConsoleColor.Yellow, "Type in your action");
-                            }else
-                            {
-                                write(ConsoleColor.Red, "You cannot move in that direction");
-                            }
-                        }
-
-                        break;
-
-                    case Actions.Examine:
-                        string text = current.examine(parameter);
-                        write(ConsoleColor.Cyan, text);
-                        break;
-
-                    case Actions.Look:
-                        write(ConsoleColor.Green, current.name);
-                        write(ConsoleColor.White, current.description);
-                        string[] names = current.getNPCNames();
-                        if (names == null)
-                        {
-                            write(ConsoleColor.Cyan, "You are the only person here.");
-                        }
-                        else
-                        {
-                            write(ConsoleColor.Cyan, "People that are with you include: ");
-                            foreach (string name in names)
-                            {
-                                write(ConsoleColor.Cyan, name);
-                            }
-                        }
-                        break;
-
-                    case Actions.Talk:
-                        string dialouge = current.getNPCDialogue(parameter);
-                        if (!string.IsNullOrEmpty(dialouge))
-                        {
-                            write(ConsoleColor.Cyan, String.Format("The person says '{1}'",parameter,dialouge));
-                        }
-                        break;
-
-                    case Actions.Help:
-                        help();
-                        break;
-
-                    case Actions.Get:
-                        Item thing = current.obtain(parameter);
-                        if(thing != null)
-                        {
-                            player.Inventory.Add(thing);
-                        }
-                        break;
-                    case Actions.CheckInv:
-                        write(ConsoleColor.Green, string.Format("You currently have {0} hp left", player.Health));
-                        write(ConsoleColor.Cyan, "You inventory contains:");
-                        foreach(Item invItem in player.Inventory)
-                        {
-                            write(ConsoleColor.Cyan, invItem.name);
-                        }
-                        break;
-                    case Actions.Save:
-                        player.position = current.ID;
-                        var seralizer = new XmlSerializer(typeof (Player));
-                        using(Stream s = new FileStream(path.playerSave,FileMode.Create,FileAccess.Write))
-                        {
-                            seralizer.Serialize(s, player);
-                        }
-                        write(ConsoleColor.Green, "Saved.");
-                        return;
-                    case Actions.Attack:
-                        NPC target = current.getNPC(parameter);
-                        if(target != null)
-                        {
-                            target.standing--;
-                            Damage(player, target);
-                            if(target.Health <= 0)
-                            {
-                                current.NPCs.Remove(target);
-                            }
-                            else if(player.Health <= 0)
-                            {
-                                player.DropItems(current);
-                                write(ConsoleColor.Cyan, "You have awaken at the spawnpoint.");
-                                current = entrance;
-                            }
-                        }
-                        break;
-                    case Actions.RepeatAttack:
-                        NPC deletedTarget = current.getNPC(parameter);
-                        if (deletedTarget != null)
-                        {
-                            while (deletedTarget.Health > 0 && player.Health > 0)
-                            {
-                                deletedTarget.standing--;
-                                Damage(player, deletedTarget);
-                                foreach (NPC angryNPC in current.angryNPCs)
-                                {
-                                    if (angryNPC.Health >= 0)
-                                    {
-                                        Damage(angryNPC, player);
-                                    }
-                                }
-                                System.Threading.Thread.Sleep(100);
-                            }
-                            if (deletedTarget.Health <= 0)
-                            {
-                                current.NPCs.Remove(deletedTarget);
-                            }
-                            else if (player.Health <= 0)
-                            {
-                                player.DropItems(current);
-                                write(ConsoleColor.Cyan, "You have awaken at the spawnpoint.");
-                                current = entrance;
-                            }
-                        }
-                        break;
-                    case Actions.exits:
-                        write(ConsoleColor.Cyan, "Exits avaliable are:");
-                        foreach (KeyValuePair<Direction, Room> pair in current.connectingRooms)
-                        {
-                            if(pair.Value != null)
-                            {
-                                write(ConsoleColor.Cyan, String.Format(" - {0} : {1}", pair.Key.ToString(), pair.Value.name));
-                            }
-                        }
-                        break;
-                }
+                action.execute(current, player, command, parameter);
+                
                 foreach(NPC angryNPC in current.angryNPCs)
                 {
                     Damage(angryNPC, player);
@@ -267,11 +88,6 @@ namespace MUD_Prototype_Mk1
             Console.ResetColor();
         }
 
-        public static void help()
-        {
-            write(ConsoleColor.Green, "'move + direction' to move (ex. move east)\n'examine+object' to get details on an object (ex. examine rock)\n'look'to get the room description");
-        }
-
         public static void MoveNPC()
         {
             Random r = new Random();
@@ -287,9 +103,9 @@ namespace MUD_Prototype_Mk1
                             {
 
                                 Direction movingDirection = (Direction)r.Next(4);
-                                if (entity.currentRoom.connectingRooms[movingDirection] != null)
+                                if (entity.currentRoom.ConnectingRooms[movingDirection] != null)
                                 {
-                                    Room destoRoom = entity.currentRoom.connectingRooms[movingDirection];
+                                    Room destoRoom = entity.currentRoom.ConnectingRooms[movingDirection];
                                     if (current == entity.currentRoom)
                                     {
                                         write(ConsoleColor.Yellow, String.Format("{0} has entered the area.", entity.name));
@@ -334,8 +150,8 @@ namespace MUD_Prototype_Mk1
                 while(input[line][0] == 'I')
                 {
                     parameters = input[line].Split('|');
-                    rooms[rooms.Count - 1].objects.Add(new Item(parameters[2], parameters[3], parameters[5]));
-                    Item currentItem = rooms[rooms.Count - 1].objects[Int32.Parse(parameters[1])];
+                    rooms[rooms.Count - 1].Objects.Add(new Item(parameters[2], parameters[3], parameters[5]));
+                    Item currentItem = rooms[rooms.Count - 1].Objects[Int32.Parse(parameters[1])];
                     if (parameters[4] == "Y")
                     {
                         currentItem.obtainable = true;
@@ -372,16 +188,16 @@ namespace MUD_Prototype_Mk1
                 switch (parameters[1])
                 {
                     case "E":
-                        rooms[originRoom].connectingRooms[Direction.East] = rooms[destoRoom];
+                        rooms[originRoom].ConnectingRooms[Direction.East] = rooms[destoRoom];
                         break;
                     case "W":
-                        rooms[originRoom].connectingRooms[Direction.West] = rooms[destoRoom];
+                        rooms[originRoom].ConnectingRooms[Direction.West] = rooms[destoRoom];
                         break;
                     case "N":
-                        rooms[originRoom].connectingRooms[Direction.North] = rooms[destoRoom];
+                        rooms[originRoom].ConnectingRooms[Direction.North] = rooms[destoRoom];
                         break;
                     case "S":
-                        rooms[originRoom].connectingRooms[Direction.South] = rooms[destoRoom];
+                        rooms[originRoom].ConnectingRooms[Direction.South] = rooms[destoRoom];
                         break;
                 }
                 line++;
@@ -429,5 +245,7 @@ namespace MUD_Prototype_Mk1
                 write(ConsoleColor.Cyan,string.Format("You died to {0}",npc.name));
             }
         }
+
+
     }
 }

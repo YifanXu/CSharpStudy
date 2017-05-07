@@ -70,6 +70,7 @@ namespace MUD_Prototype_Mk1
 
     public class Player : Creature
     {
+        public IRoom current;
         public int position;
         //[XmlArray("PersonenArray")]
         public List<Item> Inventory;
@@ -82,7 +83,7 @@ namespace MUD_Prototype_Mk1
             position = 0;
         }
 
-        public void DropItems(Room current)
+        public void DropItems(IRoom current)
         {
             Random r = new Random();
             foreach (Item item in this.Inventory)
@@ -105,7 +106,7 @@ namespace MUD_Prototype_Mk1
         {
             get
             {
-                if(standing > 0)
+                if (standing > 0)
                 {
                     return positiveDialouge;
                 }
@@ -113,15 +114,21 @@ namespace MUD_Prototype_Mk1
             }
         }
 
-        public NPC() : this("Person","","")
+        public NPC() : this("Person", "", "")
         {
 
         }
 
-        public NPC(string name, string positiveDialouge, string negativeDialogue) : base(name,1000,10,0.1,2)
+        public NPC(string name, string positiveDialouge, string negativeDialogue) : base(name, 1000, 10, 0.1, 2)
         {
             this.positiveDialouge = positiveDialouge;
             this.negativeDialouge = negativeDialogue;
+        }
+
+        public NPC(string name, string dialouge, int health, int damage) : base (name, health, damage, 0.1, 0)
+        {
+            this.positiveDialouge = dialouge;
+            this.negativeDialouge = dialouge;
         }
     }
 
@@ -129,13 +136,13 @@ namespace MUD_Prototype_Mk1
     {
         public int stamina;
         public readonly int maxStamina;
-        public Room currentRoom;
+        public IRoom currentRoom;
         
-        public RunningNPC (string name, string positiveDialouge, string negativeDialogue, int stamina, Room currentRoom) : base(name, positiveDialouge, negativeDialogue)
+        public RunningNPC (string name, string positiveDialouge, string negativeDialogue, int stamina, IRoom room) : base(name, positiveDialouge, negativeDialogue)
         {
             this.stamina = stamina;
             this.maxStamina = stamina;
-            this.currentRoom = currentRoom;
+            this.currentRoom = room;
         }
     }
 
@@ -162,13 +169,15 @@ namespace MUD_Prototype_Mk1
     public class Room : IRoom
     {
         public string Name { get; }
-        public int ID { get; }
+        public int ID { get; set; }
         private string originalDescription;
         public List<Item> Objects { get; set; }
         public List<NPC> NPCs { get; set; }
-        public Dictionary<Direction, Room> ConnectingRooms { get;}
-
-
+        public Dictionary<Direction, IRoom> ConnectingRooms { get; private set; }
+        public bool Locked { get; set; }
+        public int reactivation { get; set; }
+        public IRoom desto { get; set; }
+        public NPC guardian { get; protected set; }
 
         public string description
         {
@@ -196,7 +205,7 @@ namespace MUD_Prototype_Mk1
             this.originalDescription = description;
             this.Objects = new List<Item>();
             this.NPCs = new List<NPC>();
-            this.ConnectingRooms = new Dictionary<Direction, Room>()
+            this.ConnectingRooms = new Dictionary<Direction, IRoom>()
             {
                 {Direction.North, null},
                 {Direction.South, null},
@@ -205,7 +214,7 @@ namespace MUD_Prototype_Mk1
             };
         }
 
-        public Room Move(Direction direction)
+        public IRoom Move(Direction direction)
         {
             return this.ConnectingRooms[direction];
         }
@@ -303,6 +312,11 @@ namespace MUD_Prototype_Mk1
 
         public virtual void ShowTravelInfo()
         {
+        }
+
+        public virtual void Pay(int offer, out string message)
+        {
+            message = "There is nobody to pay.";
         }
     }
 

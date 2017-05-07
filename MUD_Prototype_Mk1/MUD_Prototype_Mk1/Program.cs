@@ -13,7 +13,7 @@ namespace MUD_Prototype_Mk1
 
     class Program
     {
-        public static Room current;
+        public static Player player;
         public static List<RunningNPC> Runningboys = new List<RunningNPC>();
         public string savePath = "data" + Path.DirectorySeparatorChar + "saveFile";
         public const double counterAttackFactor = 0.7;
@@ -23,7 +23,6 @@ namespace MUD_Prototype_Mk1
             var path = new Paths();
 
             //Load Files?
-            Player player;
             write(ConsoleColor.Green, "new or load?");
             string input = Console.ReadLine();
             while (string.IsNullOrEmpty(input) || (input != "new" && input != "load")) {
@@ -41,12 +40,13 @@ namespace MUD_Prototype_Mk1
                     player = (Player) seralizer.Deserialize(s);
                 }
             }
-            Room entrance = ReadFile(path.defaultMap,player.position, out current);
+            IRoom entrance = ReadFile(path.defaultMap,player.position);
+            player.current = entrance;
             Act action = new Act(entrance);
             runNPC.Start();
 
-            write(ConsoleColor.Green, current.Name);
-            Console.WriteLine(current.description);
+            write(ConsoleColor.Green, player.current.Name);
+            Console.WriteLine(player.current.description);
             
             write(ConsoleColor.Yellow, "Type in your action");
 
@@ -61,21 +61,21 @@ namespace MUD_Prototype_Mk1
                 {
                     parameter = input.Substring(command.Length + 1);
                 }
-                action.execute(current, player, command, parameter);
+                action.execute(player, command, parameter);
                 
-                foreach(NPC angryNPC in current.angryNPCs)
+                foreach(NPC angryNPC in player.current.angryNPCs)
                 {
-                    Damage(angryNPC, player);
+                    Act.Damage(angryNPC, player);
                     if (angryNPC.Health <= 0)
                     {
-                        current.NPCs.Remove(angryNPC);
+                        player.current.NPCs.Remove(angryNPC);
                         continue;
                     }
                     else if (player.Health <= 0)
                     {
-                        player.DropItems(current);
+                        player.DropItems(player.current);
                         write(ConsoleColor.Cyan, "You have awaken at the spawnpoint.");
-                        current = entrance;
+                        player.current = entrance;
                     }
                 }
             }
@@ -101,12 +101,11 @@ namespace MUD_Prototype_Mk1
                         {
                             for (int i = 0; i < 50; i++)
                             {
-
                                 Direction movingDirection = (Direction)r.Next(4);
                                 if (entity.currentRoom.ConnectingRooms[movingDirection] != null)
                                 {
-                                    Room destoRoom = entity.currentRoom.ConnectingRooms[movingDirection];
-                                    if (current == entity.currentRoom)
+                                    IRoom destoRoom = entity.currentRoom.ConnectingRooms[movingDirection];
+                                    if (player.current == entity.currentRoom)
                                     {
                                         write(ConsoleColor.Yellow, String.Format("{0} has entered the area.", entity.name));
                                     }
@@ -116,7 +115,7 @@ namespace MUD_Prototype_Mk1
                                     entity.currentRoom = destoRoom;
 
 
-                                    if (current == entity.currentRoom)
+                                    if (player.current == entity.currentRoom)
                                     {
                                         write(ConsoleColor.Yellow, String.Format("{0} has left the area.", entity.name));
                                     }
@@ -130,21 +129,46 @@ namespace MUD_Prototype_Mk1
             }
         }
 
-        public static Room ReadFile(string path, int position, out Room current)
+        public static IRoom ReadFile(string path, int position)
         {
-            current = new Room();
+            player.current = new Room();
             if (!File.Exists(path))
             {
                 return null;
             }
-            List<Room> rooms = new List<Room>();
+            List<IRoom> rooms = new List<IRoom>();
             int line = 0;
             string[] input = File.ReadAllLines(path);
+
             while(line < input.Length && input[line] != "END")
             {
                 //Add Room
                 string[] parameters = input[line].Split('|');
-                rooms.Add(new Room(parameters[2], parameters[3]));
+                if (parameters[0] == "P")
+                {
+                    if (input[line + 1].StartsWith("G"))
+                    {
+                        line++;
+                        parameters = input[line].Split('|');
+                        NPC guardian = new NPC(parameters[2], parameters[3], int.Parse(parameters[4]), int.Parse(parameters[5]));
+                        line--;
+                        parameters = input[line].Split('|');
+                        if (int.Parse(parameters[4]) == -1)
+                        {
+                            guardian.standing = -3;
+                        }
+                        rooms.Add(new Portal(parameters[2], parameters[3], int.Parse(parameters[4]), guardian));
+                        line++;
+                    }
+                    else
+                    {
+                        rooms.Add(new Portal(parameters[2], parameters[3]));
+                    }
+                }
+                else
+                {
+                    rooms.Add(new Room(parameters[2], parameters[3]));
+                }
                 line++;
                 //Add Items
                 while(input[line][0] == 'I')
@@ -180,7 +204,7 @@ namespace MUD_Prototype_Mk1
                 }
             }
             line++;
-            while (line < input.Length)
+            while (line < input.Length && !input[line].StartsWith("P"))
             {
                 string[] parameters = input[line].Split('|');
                 int originRoom = int.Parse(parameters[0]);
@@ -202,48 +226,22 @@ namespace MUD_Prototype_Mk1
                 }
                 line++;
             }
-            current = rooms[0];
+            while (line < input.Length)
+            {
+                string[] parameters = input[line].Split('|');
+                rooms[int.Parse(parameters[1])].desto = rooms[int.Parse(parameters[2])];
+                line++;
+            }
+            player.current = rooms[0];
             for(int i = 0; i < rooms.Count; i++)
             {
                 if(i == position)
                 {
-                    current = rooms[i];
+                    player.current = rooms[i];
                 }
                 rooms[i].ID = i;
             }
             return rooms[0];
-        }
-
-        public static void Damage(Player player, NPC npc)
-        {
-            int damage = (int)((double)player.damage * (1 - npc.resistence));
-            npc.Health -= damage;
-            write(ConsoleColor.Green, String.Format("You dealt {0} damage to {1}", damage, npc.name));
-            if(npc.Health > 0)
-            {
-                damage = (int)((double)npc.damage * (1 - player.resistence) * counterAttackFactor);
-                player.Health -= damage;
-                write(ConsoleColor.Red, string.Format("{1} counterattacked and dealt {0} damage to you.", damage, npc.name));
-            }else
-            {
-                write(ConsoleColor.Green, string.Format("You successfully defeated {0}", npc.name));
-            }
-        }
-        public static void Damage(NPC npc, Player player)
-        {
-            int damage = (int)((double)npc.damage * (1 - player.resistence));
-            player.Health -= damage;
-            write(ConsoleColor.Red, string.Format("Seeing you as an enemy, {1} suddenly attacked you for {0} damage.", damage, npc.name));
-            if (player.Health > 0)
-            {
-                damage = (int)((double)player.damage * (1 - npc.resistence));
-                write(ConsoleColor.Green,string.Format("You attempted an counterattck on {1} and dealt {0} damage.", damage, npc.name));
-                npc.Health -= damage;
-            }
-            else
-            {
-                write(ConsoleColor.Cyan,string.Format("You died to {0}",npc.name));
-            }
         }
 
 

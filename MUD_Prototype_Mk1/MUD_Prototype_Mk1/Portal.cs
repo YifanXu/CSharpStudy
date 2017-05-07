@@ -8,41 +8,34 @@ namespace MUD_Prototype_Mk1
 {
     class Portal : Room
     {
-        private readonly Room destination;
-        public bool locked;
         public readonly int fee;
-        public NPC guardian;
-        public int reactivation = 0;
 
-        public Room desto
+        public Portal() : base ()      
         {
-            get
-            {
-                return destination;
-            }
-        }
 
-        public Portal() : base()
-        {
-            
         }
 
         public Portal(string name, string description) : base(name, description)
         {
-            this.locked = false;
+            this.Locked = false;
+            this.Objects = new List<Item>();
+            this.NPCs = new List<NPC>();
         }
 
         public Portal(string name, string description, int fee, NPC guardian) : base(name, description)
         {
-            this.locked = true;
+            this.Locked = true;
             this.fee = fee;
             this.guardian = guardian;
+            this.Objects = new List<Item>();
+            this.NPCs = new List<NPC>();
+            this.NPCs.Add(this.guardian);
         }
 
         public override void ShowTravelInfo()
         {
-            Program.write(ConsoleColor.Magenta, String.Format("This room also contains a portal that leads to {0}", destination.Name));
-            if (locked)
+            Program.write(ConsoleColor.Magenta, String.Format("This room also contains a portal that leads to {0}", desto.Name));
+            if (Locked)
             {
                 Program.write(ConsoleColor.Red, "Your access to the portal is currently denied.");
             }
@@ -53,30 +46,30 @@ namespace MUD_Prototype_Mk1
             }
         }
 
-        public bool pay (int offer, out string message)
+        public override void Pay (int offer, out string message)
         {
             if(offer < fee)
             {
                 message = "The guardian refused your offer, and the portal remains closed.";
-                return false;
+                return;
             }
             if(guardian.standing < -2)
             {
                 message = "The guardian is hostile to you. He will reject all the offers you make.";
-                return false;
+                return;
             }
             if(reactivation > 0)
             {
                 message = "The portal is unstable as you have traveled through it recently. You decided not to walk through it.";
-                return false;
+                return;
             }
-            if (!locked)
+            if (!Locked)
             {
                 message = "The portal is already unlocked.";
-                return false;
+                return;
             }
             message = "You have successfully accessed the portal. Congrats!";
-            return false;
+            Locked = false;
         }
 
     }

@@ -13,9 +13,10 @@ namespace MUD_Prototype_Mk1
     {
 
         private const double counterAttackFactor = 0.7;
-        public readonly Room spawn;
+        public readonly IRoom spawn;
         private readonly string playerSave = string.Format("data{0}playerSaveFile.txt", Path.DirectorySeparatorChar);
-        private Dictionary<string, Action<Room, Player, string>> commands;
+        private Dictionary<string, Action<Player, string>> commands;
+        public SubSpace tunnel;
 
         private Dictionary<string, Direction> moveCommands = new Dictionary<string, Direction>(StringComparer.OrdinalIgnoreCase){
                 {"n", Direction.North },
@@ -28,19 +29,27 @@ namespace MUD_Prototype_Mk1
                 {"east", Direction.East }
             };
 
-        public Act(Room entrance)
+        public Act(IRoom entrance)
         {
             this.spawn = entrance;
-            this.commands = new Dictionary<string, Action<Room, Player, string>>(StringComparer.OrdinalIgnoreCase)
+            this.tunnel = new SubSpace();
+            this.commands = new Dictionary<string, Action<Player, string>>(StringComparer.OrdinalIgnoreCase)
             {
                 {"move", Move},
                 {"go", Move},
+                {"travel", Travel },
+                {"jump", Travel },
+                {"portal", Travel },
+                {"pay", Pay },
+                {"offer", Pay },
                 {"look", Look},
                 {"examine", Examine },
                 {"ex", Examine },
                 {"help", Help },
                 {"get", Get },
                 {"obtain", Get },
+                {"take", Get },
+                {"pickup", Get },
                 {"inv", CheckInv },
                 {"inventory", CheckInv },
                 {"quit", Save },
@@ -56,20 +65,20 @@ namespace MUD_Prototype_Mk1
             };
         }
 
-        public void execute(Room current, Player player, string command, string parameter)
+        public void execute(Player player, string command, string parameter)
         {
-            Action<Room,Player,string> action;
+            Action<Player, string> action;
             if(!commands.TryGetValue(command, out action))
             {
                 Program.write(ConsoleColor.Red, "Invalid Input");
             }
             else
             {
-                action(current, player, parameter);
+                action(player, parameter);
             }
         }
 
-        public void Move(Room current, Player player, string parameter)
+        public void Move(Player player, string parameter)
         {
             Direction dir;
             if (!moveCommands.TryGetValue(parameter, out dir))
@@ -78,12 +87,12 @@ namespace MUD_Prototype_Mk1
             }
             else
             {
-                Room targetRoom = current.Move(dir);
+                IRoom targetRoom = player.current.Move(dir);
                 if (targetRoom != null)
                 {
-                    current = targetRoom;
-                    Program.write(ConsoleColor.Green, current.Name);
-                    Console.WriteLine(current.description);
+                    player.current = targetRoom;
+                    Program.write(ConsoleColor.Green, player.current.Name);
+                    Console.WriteLine(player.current.description);
                     Program.write(ConsoleColor.Yellow, "Type in your action");
                 }
                 else
@@ -93,16 +102,64 @@ namespace MUD_Prototype_Mk1
             }
         }
 
-        public void Examine(Room current, Player player, string parameter)
+        public void Travel (Player player, string parameter)
         {
-            Program.write(ConsoleColor.Cyan, current.examine(parameter));
+            if(player.current is SubSpace)
+            {
+                Program.write(ConsoleColor.Green, "You successfully went through the portal.");
+                player.current = player.current.desto;
+                Program.write(ConsoleColor.Green, player.current.Name);
+                Console.WriteLine(player.current.description);
+                Program.write(ConsoleColor.Yellow, "Type in your action");
+                return;
+            }
+            if(!(player.current is Portal))
+            {
+                Program.write(ConsoleColor.Red, "There is no portal to go through.");
+                return;
+            }
+            if (player.current.Locked)
+            {
+                Program.write(ConsoleColor.Red, "The portal is unavaliable for you to go through. Pay the guardian or defeat it to access the portal.");
+                return;
+            }
+            if(player.current.reactivation > 0)
+            {
+                Program.write(ConsoleColor.Red, String.Format("The portal is unstable for you to use. Try again in {0} seconds.",player.current.reactivation));
+                return;
+            }
+            Program.write(ConsoleColor.Green, "You walked through the portal.");
+            tunnel.desto = player.current.desto;
+            player.current = tunnel;
+            Program.write(ConsoleColor.Green, player.current.Name);
+            Console.WriteLine(player.current.description);
+            Program.write(ConsoleColor.Yellow, "Type in your action");
         }
 
-        public void Look(Room current, Player player, string parameter)
+        public void Pay ( Player player, string parameter)
         {
-            Program.write(ConsoleColor.Green, current.Name);
-            Program.write(ConsoleColor.White, current.description);
-            string[] names = current.getNPCNames();
+            int offer;
+            if (int.TryParse(parameter,out offer))
+            {
+                string message;
+                player.current.Pay(offer, out message);
+                Program.write(ConsoleColor.Cyan, message);
+            }else
+            {
+                Program.write(ConsoleColor.Red, "Invalid Parameter");
+            }
+        }
+
+        public void Examine(Player player, string parameter)
+        {
+            Program.write(ConsoleColor.Cyan, player.current.examine(parameter));
+        }
+
+        public void Look(Player player, string parameter)
+        {
+            Program.write(ConsoleColor.Green, player.current.Name);
+            Program.write(ConsoleColor.White, player.current.description);
+            string[] names = player.current.getNPCNames();
             if (names == null)
             {
                 Program.write(ConsoleColor.Cyan, "You are the only person here.");
@@ -117,16 +174,16 @@ namespace MUD_Prototype_Mk1
             }
         }
 
-        public void Talk(Room current, Player player, string parameter)
+        public void Talk(Player player, string parameter)
         {
-            string dialouge = current.getNPCDialogue(parameter);
+            string dialouge = player.current.getNPCDialogue(parameter);
             if (!string.IsNullOrEmpty(dialouge))
             {
                 Program.write(ConsoleColor.Cyan, String.Format("The person says '{1}'", parameter, dialouge));
             }
         }
 
-        public void Help(Room current, Player player, string parameter)
+        public void Help(Player player, string parameter)
         {
             Program.write(ConsoleColor.Cyan, "Avaliable commands include:");
             foreach(string command in commands.Keys)
@@ -134,19 +191,19 @@ namespace MUD_Prototype_Mk1
                 Program.write(ConsoleColor.Cyan, command);
             }
         }
-
-        public void Get(Room current, Player player, string parameter)
+        
+        public void Get(Player player, string parameter)
         {
-            Item thing = current.obtain(parameter);
+            Item thing = player.current.obtain(parameter);
             if (thing != null)
             {
                 player.Inventory.Add(thing);
             }
         }
 
-        public void CheckInv(Room current, Player player, string paremeter)
+        public void CheckInv(Player player, string paremeter)
         {
-            Program.write(ConsoleColor.Green, string.Format("You currently have {0} hp left", player.Health));
+            Program.write(ConsoleColor.Green, string.Format("You player.currently have {0} hp left", player.Health));
             Program.write(ConsoleColor.Cyan, "You inventory contains:");
             foreach (Item invItem in player.Inventory)
             {
@@ -155,9 +212,9 @@ namespace MUD_Prototype_Mk1
             
         }
 
-        public void Save(Room current, Player player, string paremeter)
+        public void Save(Player player, string paremeter)
         {
-            player.position = current.ID;
+            player.position = player.current.ID;
             var seralizer = new XmlSerializer(typeof(Player));
             using (Stream s = new FileStream(playerSave, FileMode.Create, FileAccess.Write))
             {
@@ -167,42 +224,74 @@ namespace MUD_Prototype_Mk1
             return;
         }
 
-        public void Attack(Room current, Player player, string parameter)
+        public void Attack(Player player, string parameter)
         {
-            NPC target = current.getNPC(parameter);
+            NPC target = player.current.getNPC(parameter);
             if (target != null)
             {
                 target.standing--;
                 Damage(player, target);
                 if (target.Health <= 0)
                 {
-                    current.NPCs.Remove(target);
+                    if (target == player.current.guardian)
+                    {
+                        player.current.Locked = false;
+                    }
+                    player.current.NPCs.Remove(target);
                 }
                 else if (player.Health <= 0)
                 {
-                    player.DropItems(current);
+                    player.DropItems(player.current);
                     Program.write(ConsoleColor.Cyan, "You have awaken at the spawnpoint.");
-                    current = spawn;
+                    player.current = spawn;
                 }
             }
 
         }
 
-        public void RepeatAttack(Room current, Player player, string parameter)
+        public void RepeatAttack(Player player, string parameter)
         {
-            Program.write(ConsoleColor.Green, string.Format("You currently have {0} hp left", player.Health));
-            Program.write(ConsoleColor.Cyan, "You inventory contains:");
-            foreach (Item invItem in player.Inventory)
+            NPC deletedTarget = player.current.getNPC(parameter);
+            if(deletedTarget == null && parameter == player.current.guardian.name)
             {
-                Program.write(ConsoleColor.Cyan, invItem.name);
-            }
 
+            }
+            if (deletedTarget != null)
+            {
+                while (deletedTarget.Health > 0 && player.Health > 0)
+                {
+                    deletedTarget.standing--;
+                    Damage(player, deletedTarget);
+                    foreach (NPC angryNPC in player.current.angryNPCs)
+                    {
+                        if (angryNPC.Health >= 0)
+                        {
+                            Damage(angryNPC, player);
+                        }
+                    }
+                    System.Threading.Thread.Sleep(100);
+                }
+                if (deletedTarget.Health <= 0)
+                {
+                    if (deletedTarget == player.current.guardian)
+                    {
+                        player.current.Locked = false;
+                    }
+                    player.current.NPCs.Remove(deletedTarget);
+                }
+                else if (player.Health <= 0)
+                {
+                    player.DropItems(player.current);
+                    Program.write(ConsoleColor.Cyan, "You have awaken at the spawnpoint.");
+                    player.current = spawn;
+                }
+            }
         }
 
-        public void ShowExits(Room current, Player player, string parameter)
+        public void ShowExits(Player player, string parameter)
         {
             Program.write(ConsoleColor.Cyan, "Exits avaliable are:");
-            foreach (KeyValuePair<Direction, Room> pair in current.ConnectingRooms)
+            foreach (KeyValuePair<Direction, IRoom> pair in player.current.ConnectingRooms)
             {
                 if (pair.Value != null)
                 {
@@ -210,9 +299,9 @@ namespace MUD_Prototype_Mk1
                 }
             }
             
-            if(current is Portal)
+            if(player.current is Portal)
             {
-                current.ShowTravelInfo();
+                player.current.ShowTravelInfo();
             }
         }
 

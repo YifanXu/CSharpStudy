@@ -187,10 +187,10 @@ namespace MUD_Prototype_Mk1
                     }
                     line++;
                 }
-                while(input[line][0] == 'N')
+                while(input[line][0] == 'N' || input[line][0] == 'M')
                 {
                     parameters = input[line].Split('|');
-                    if (input[line].StartsWith("NM"))
+                    if (input[line].StartsWith("M"))
                     {
                         RunningNPC runningboi = new RunningNPC(parameters[2], parameters[3], parameters[4], int.Parse(parameters[5]), rooms[rooms.Count - 1]);
                         rooms[rooms.Count - 1].NPCs.Add(runningboi);
@@ -198,7 +198,14 @@ namespace MUD_Prototype_Mk1
                     }
                     else
                     {
-                        rooms[rooms.Count - 1].NPCs.Add(new NPC(parameters[2], parameters[3], parameters[4]));
+                        if (parameters.Length == 7)
+                        {
+                            rooms[rooms.Count - 1].NPCs.Add(new NPC(parameters[2], parameters[3], parameters[4], int.Parse(parameters[5]), int.Parse(parameters[6])));
+                        }
+                        else
+                        {
+                            rooms[rooms.Count - 1].NPCs.Add(new NPC(parameters[2], parameters[3], parameters[4]));
+                        }
                     }
                     line++;
                 }

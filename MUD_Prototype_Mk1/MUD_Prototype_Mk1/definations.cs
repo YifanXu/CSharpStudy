@@ -125,10 +125,17 @@ namespace MUD_Prototype_Mk1
             this.negativeDialouge = negativeDialogue;
         }
 
+
         public NPC(string name, string dialouge, int health, int damage) : base (name, health, damage, 0.1, 0)
         {
             this.positiveDialouge = dialouge;
             this.negativeDialouge = dialouge;
+        }
+
+        public NPC(string name, string positiveDialouge, string negativeDialogue, int health, int damage) : base(name, health, damage, 0.1, 2)
+        {
+            this.positiveDialouge = positiveDialouge;
+            this.negativeDialouge = negativeDialogue;
         }
     }
 

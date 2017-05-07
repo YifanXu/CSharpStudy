@@ -3,12 +3,33 @@ I|0|Rock|A small natural stone with some next texture, might come in handy.|Y|Yo
 I|1|Tunnel|Darkness surround your only exit, will you take it?|N|Why are you trying to pick up a tunnel?
 R|1|Tunnel|You are in a smooth tunnel, so smooth that you might fall. You can only blackness to the east and the west.
 R|2|Cave Entrance|A cave entrance with a tunnel leading west, and a dirt path to the forest. A castle can be seen in the distance.
-NM|0|Thief|I am not going to bother with a poor boy like you.|Come here, you are easier to rob when you are dead!|30
+M|0|Thief|I am not going to bother with a poor boy like you.|Come here, you are easier to rob when you are dead!|30
 P|3|North Portal|The name suggests that there is a portal down south, doesn't it?|100
 G|0|Concord Soldier|Yeaaaa, Pay meee 100 golddd to geettt throuughh|500|10
 N|0|Traveler|Don't mind me, just passing through|WTF dude! Chill!
 P|4|South Portal|The name suggests that there is a portal up north, doesn't it?|-1
 I|0|Shard|It is filled with magical energy|Y|You picked up the mysterious shard|Also, a mysterious shard lies on the ground.
+P|5|Portal Room (Spawn)|The door closed behind you as you enter. It would seem that your only exit is going through the portal.|-1
+R|6|Town Entrance|A statue lies in front of you. Behind it, you can see a lively town: The town of Theasead. There are traces of a portal that was once here, but not anymore.
+I|0|Statue|It is a statue of someone that you do not recognize|N|The statue is too heavy for you to carry.|
+R|7|Town Alley|The town is relatively small. You can see an inn to the west.
+I|0|Inn|A small inn, with smoke coming out from its top. It looks like a cozy place.|N|How are you planning to do that?
+R|8|Inn|A small inn. The place is pretty warm.
+I|0|Beer|A packaged bottle of beer. It looks perfectly fine.|Y|Yay, beer! You secretly picked up the beer.|A bottle of beer is lying on the table.
+N|0|Innkeeper|Hello. I have retired from being a knight and now i got this cozy inn. You look new, you can try going north from here to go to the Capital City.|I was a warrior and I still am. Die!
+N|1|Drunken Man|Just...just leave me be...|LEAVE ME!
+R|9|Path|A dirt path leading north and south. You can see a town to the south
+R|10|Path|A dirt path leading north and south.
+N|0|Traveler|N|0|Don't mind me, just passing through|WTF dude! Chill!
+R|11|Path|A dirt path leading north and south. A mysterious hut lies to the right of the path.
+I|0|Hut|A wooden hut, left for the nature to rot.|N|Nice try, but you can't do that.
+P|12|Hut|An undefended portal lies. Where could it lead to?|-1
+R|13|Path|A dirt path leading north and south.
+R|14|Path|A dirt path leading north and south. You can see a strcuture up north.
+R|15|Checkpoint|A small station lies for people to rest. The station had a label on it, showing that it belongs to the Concord Empire.
+I|0|Station|A small structure made out of concrete. It's a place to quarter solders.
+N|0|Concord Soldier|Hello there. The capital is up north, and the Town of Theasead is down south.|Die! Enemy of the Concord Empire!|500|50
+N|1|Resting Traveler|Ahh, good day isn't it?|STOP!
 END
 0|E|1
 1|W|0
@@ -18,5 +39,25 @@ END
 3|S|2
 2|S|4
 4|N|2
+2|E|5
+6|N|7
+7|S|6
+7|W|8
+8|E|7
+7|N|9
+9|S|7
+9|N|10
+10|S|9
+10|N|11
+11|S|10
+11|E|12
+12|W|11
+11|N|13
+13|S|11
+13|N|14
+14|S|13
+14|N|15
+15|S|14
 P|3|4
 P|4|3
+P|5|6

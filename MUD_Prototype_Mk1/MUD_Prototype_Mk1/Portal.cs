@@ -34,6 +34,11 @@ namespace MUD_Prototype_Mk1
 
         public override void ShowTravelInfo()
         {
+            if(desto == null)
+            {
+                Program.write(ConsoleColor.Magenta, "This room also contains a portal that doesn't work.");
+                return;
+            }
             Program.write(ConsoleColor.Magenta, String.Format("This room also contains a portal that leads to {0}", desto.Name));
             if (Locked)
             {

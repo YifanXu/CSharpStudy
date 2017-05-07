@@ -118,6 +118,11 @@ namespace MUD_Prototype_Mk1
                 Program.write(ConsoleColor.Red, "There is no portal to go through.");
                 return;
             }
+            if(player.current.desto == null)
+            {
+                Program.write(ConsoleColor.Cyan, "The portal seemed to be broken. It doesn't lead to anywhere.");
+                return;
+            }
             if (player.current.Locked)
             {
                 Program.write(ConsoleColor.Red, "The portal is unavaliable for you to go through. Pay the guardian or defeat it to access the portal.");
@@ -252,10 +257,6 @@ namespace MUD_Prototype_Mk1
         public void RepeatAttack(Player player, string parameter)
         {
             NPC deletedTarget = player.current.getNPC(parameter);
-            if(deletedTarget == null && parameter == player.current.guardian.name)
-            {
-
-            }
             if (deletedTarget != null)
             {
                 while (deletedTarget.Health > 0 && player.Health > 0)

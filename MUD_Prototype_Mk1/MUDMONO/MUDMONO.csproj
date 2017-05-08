@@ -39,8 +39,20 @@
     <Compile Include="..\MUD_Prototype_Mk1\Program.cs">
       <Link>Program.cs</Link>
     </Compile>
+    <Compile Include="..\MUD_Prototype_Mk1\IRoom.cs">
+      <Link>IRoom.cs</Link>
+    </Compile>
+    <Compile Include="..\MUD_Prototype_Mk1\Actions.cs">
+      <Link>Actions.cs</Link>
+    </Compile>
     <Compile Include="..\MUD_Prototype_Mk1\definations.cs">
       <Link>definations.cs</Link>
+    </Compile>
+    <Compile Include="..\MUD_Prototype_Mk1\Portal.cs">
+      <Link>Portal.cs</Link>
+    </Compile>
+    <Compile Include="..\MUD_Prototype_Mk1\SubSpace.cs">
+      <Link>SubSpace.cs</Link>
     </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

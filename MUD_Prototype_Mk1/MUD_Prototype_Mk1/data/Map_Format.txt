@@ -1,0 +1,44 @@
+﻿Rooms:
+R|ID|Name|Room descirption
+
+Portal Room:
+P|ID|Name|Room description|Fee(-1 if there the portal cannot be buyed to open/Portal is already open)
+*This room must not contain any items.
+**If the room is to be locked by a guardian, the guardian must be listed below as:
+
+Guardian:
+G|ID|Name|Dialouge|Health|Damage
+
+Items:
+I|ID|Name|Description|Whether the item can be obtained(Y/N)|Attempt to pick up message|Message displayed in room
+
+Normal NPC:
+N|ID|Name|Positive Standing Dialouge|Negative Standing Dialouge
+
+Moving NPC:
+NM|ID|Name|Positive Standing Dialouge|Negative Standing Dialouge|Stamina
+
+***Before adding connections, write "END" to seperate rooms and connections
+
+Regular Connections:
+Departing Room|Direction(N/S/W/E)|Destination Room
+
+Portal Connections:
+P|Departing Portal Room|Destination Portal Room
+
+
+Total Strcture
+
+Portal
+Rooms
+    Items
+    NPCs
+Rooms
+Portal
+    Guardian
+    NPCs
+END
+Connections
+Connections
+Portal Connections
+Portal connections

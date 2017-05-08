@@ -158,6 +158,7 @@ namespace MUD_Prototype_Mk1
 			while (Time > 0) {
 				Time--;
 				Thread.Sleep (1000);
+				Program.write (ConsoleColor.Cyan, String.Format ("Moving.... {0} seconds left", Time));
 			}
 			Arrived = true;
 			Program.write (ConsoleColor.Green, "You have arrived. Type in 'travel' again to reenter the world.");

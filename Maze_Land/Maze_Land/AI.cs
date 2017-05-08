@@ -14,39 +14,34 @@ namespace Maze_Land
         public Stack<MapNode> route;
         private int newX;
         private int newY;
+		private List<MapNode> blacklist;
         private readonly List<MapTile> ValidTile = new List<MapTile>()
         {
             MapTile.Passage,
             MapTile.Entrance,
             MapTile.Exit
         };
-        private readonly Dictionary<Direction, Direction> OppositeDirections = new Dictionary<Direction, Direction>()
-        {
-            {Direction.Left, Direction.Right },
-            {Direction.Right, Direction.Left },
-            {Direction.Up, Direction.Down },
-            {Direction.Down, Direction.Up }
-        };
         private readonly Dictionary<Direction, Direction> NextDirection = new Dictionary<Direction, Direction>()
         {
             {Direction.Left, Direction.Up },
             {Direction.Up, Direction.Right },
             {Direction.Right, Direction.Down },
-            {Direction.Down, Direction.None }
+            {Direction.Down, Direction.None },
+			{Direction.None, Direction.None}
         };
 
         public AI()
         {
             this.route = new Stack<MapNode>();
+			this.blacklist = new List<MapNode> ();
         }
 
-        public AI(int x, int y)
+		public AI(int x, int y) : this()
         {
             this.x = x;
             this.newX = x;
             this.y = y;
             this.newY = y;
-            this.route = new Stack<MapNode>();
         }
 
         public bool Operate(Map map)
@@ -62,7 +57,7 @@ namespace Maze_Land
                 route.Pop();
                 this.x = route.Peek().x;
                 this.y = route.Peek().y;
-                route.Peek().checkNext = NextDirection[route.Peek().checkNext];
+                route.Peek().direction = NextDirection[route.Peek().direction];
             }
             return true;
         }
@@ -71,13 +66,9 @@ namespace Maze_Land
         private bool FindExit(Map map)
         {
             //while(the block of direction is not walkable or that direction is where the AI came from)
-            while (!CheckBlock(map, route.Peek().checkNext) || IfInLoop(newX, newY)){
-                if (route.Peek().checkNext == Direction.None)
-                {
-                    return false;
-                }
-                route.Peek().checkNext = NextDirection[route.Peek().checkNext];
-                if (route.Peek().checkNext == Direction.None)
+			while (!CheckBlock(map, route.Peek().direction)){
+                route.Peek().direction = NextDirection[route.Peek().direction];
+                if (route.Peek().direction == Direction.None)
                 {
                     return false;
                 }
@@ -92,6 +83,10 @@ namespace Maze_Land
         //Check if a block of a certain direction from the current block. Returns true if that block is movable.
         private bool CheckBlock(Map map, Direction direction)
         {
+			if(IfInBlacklist(this.x, this.y, direction))
+			{
+				return false;
+			}
             MapTile targetTile;
             newX = x;
             newY = y;
@@ -115,6 +110,16 @@ namespace Maze_Land
             {
                 if(targetTile == type)
                 {
+					int routePosition;
+					if (IfInLoop (newX, newY, out routePosition)) 
+					{
+						if (routePosition != route.Count - 1) 
+						{
+							blacklist.Add (new MapNode (x, y, direction));
+						}
+						return false;
+					}
+
                     return true;
                 }
             }
@@ -122,31 +127,30 @@ namespace Maze_Land
         }
 
         //Check if the AI has stepped into a block it has previously stepped into (aka LOOP)
-<<<<<<< HEAD
-        private bool IfInLoop(out int routeSequence)
-		{
-			for (int i = 0; i < route.Count; i++) {
-				if (x == route [i].x && y == route [i].y) {
-					routeSequence = i;
-					return true;
-				}
-			}
-			routeSequence = 0;
-			return false;
-		}
-=======
-        private bool IfInLoop(int newx, int newy)
+		private bool IfInLoop(int newx, int newy, out int routePosition)
         {
             MapNode[] pastRoute = route.ToArray();
             for (int i = 0; i < route.Count - 1; i++)
             {
                 if (newx == pastRoute[i].x && newy == pastRoute[i].y)
                 {
+					routePosition = i;
                     return true;
                 }
             }
+			routePosition = 0;
             return false;
         }
->>>>>>> 6722f27e0f12ad49ca8865d0949d7a037d406ddc
+		private bool IfInBlacklist (int x, int y, Direction direction){
+			MapNode[] blackList = this.blacklist.ToArray();
+			for (int i = 0; i < blacklist.Count; i++)
+			{
+				if (x == blackList[i].x && y == blackList[i].y && direction == blacklist[i].direction)
+				{
+					return true;
+				}
+			}
+			return false;
+		}
     }
 }

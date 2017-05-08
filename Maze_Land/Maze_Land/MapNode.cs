@@ -10,13 +10,16 @@ namespace Maze_Land
     {
         public readonly int x;
         public readonly int y;
-        public Direction checkNext;
+        public Direction direction;
 
-        public MapNode(int x, int y)
+		public MapNode(int x, int y) : this(x, y, Direction.Left)
         {
-            this.x = x;
-            this.y = y;
-            this.checkNext = Direction.Left;
         }
+		public MapNode(int x, int y, Direction direction)
+		{
+			this.x = x;
+			this.y = y;
+			this.direction = direction;
+		}
     }
 }

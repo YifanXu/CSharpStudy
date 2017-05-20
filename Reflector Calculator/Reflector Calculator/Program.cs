@@ -31,13 +31,14 @@ namespace Reflector_Calculator
             var methods = calculator.GetType().GetMethods();
             foreach(var method in methods)
             {
-                if(IsMethodName(parameters[1],method))
+                if(MatchMethodName(parameters[1],method))
                 {
                     int num1 = 0;
                     int num2 = 0;
                     if(!int.TryParse(parameters[0], out num1) || !int.TryParse(parameters[2],out num2))
                     {
                         Console.WriteLine("SYSTEM: - Invalid Numbers");
+						return;
                     }
                     Console.WriteLine("SYSTEM: -Result is {0}", method.Invoke(calculator, new object[] { num1, num2 }));
                     return;
@@ -46,14 +47,19 @@ namespace Reflector_Calculator
             Console.WriteLine("SYSTEM: - Invalid Operation");
         }
 
-        public static bool IsMethodName(string methodName, System.Reflection.MethodInfo method)
+        public static bool MatchMethodName(string methodName, System.Reflection.MethodInfo method)
         {
             if (String.Equals(methodName, method.Name, StringComparison.OrdinalIgnoreCase))
             {
                 return true;
             }
             NicknameAttribute attibute = (NicknameAttribute)method.GetCustomAttribute(typeof(NicknameAttribute));
-            foreach (string nickname in attibute.names)
+
+			if (attibute == null) {
+				return false;
+			}
+
+			foreach (string nickname in attibute.names)
             {
                 if (String.Equals(methodName,nickname,StringComparison.OrdinalIgnoreCase))
                 {

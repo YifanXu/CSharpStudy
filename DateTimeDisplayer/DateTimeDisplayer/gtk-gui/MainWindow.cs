@@ -7,7 +7,29 @@ public partial class MainWindow
 	
 	private global::Gtk.Label label1;
 	
-	private global::Gtk.Entry time;
+	private global::Gtk.HBox hbox2;
+	
+	private global::Gtk.HBox hbox5;
+	
+	private global::Gtk.Image h1;
+	
+	private global::Gtk.Image h2;
+	
+	private global::Gtk.Image sign1;
+	
+	private global::Gtk.HBox hbox3;
+	
+	private global::Gtk.Image m1;
+	
+	private global::Gtk.Image m2;
+	
+	private global::Gtk.Image sign2;
+	
+	private global::Gtk.HBox hbox4;
+	
+	private global::Gtk.Image s1;
+	
+	private global::Gtk.Image s2;
 
 	protected virtual void Build ()
 	{
@@ -30,19 +52,110 @@ public partial class MainWindow
 		w1.Expand = false;
 		w1.Fill = false;
 		// Container child hbox1.Gtk.Box+BoxChild
-		this.time = new global::Gtk.Entry ();
-		this.time.CanFocus = true;
-		this.time.Name = "time";
-		this.time.IsEditable = false;
-		this.time.InvisibleChar = '•';
-		this.hbox1.Add (this.time);
-		global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.time]));
-		w2.Position = 1;
+		this.hbox2 = new global::Gtk.HBox ();
+		this.hbox2.Name = "hbox2";
+		this.hbox2.Spacing = 6;
+		// Container child hbox2.Gtk.Box+BoxChild
+		this.hbox5 = new global::Gtk.HBox ();
+		this.hbox5.Name = "hbox5";
+		this.hbox5.Spacing = 6;
+		// Container child hbox5.Gtk.Box+BoxChild
+		this.h1 = new global::Gtk.Image ();
+		this.h1.Name = "h1";
+		this.hbox5.Add (this.h1);
+		global::Gtk.Box.BoxChild w2 = ((global::Gtk.Box.BoxChild)(this.hbox5 [this.h1]));
+		w2.Position = 0;
+		w2.Expand = false;
+		w2.Fill = false;
+		// Container child hbox5.Gtk.Box+BoxChild
+		this.h2 = new global::Gtk.Image ();
+		this.h2.Name = "h2";
+		this.hbox5.Add (this.h2);
+		global::Gtk.Box.BoxChild w3 = ((global::Gtk.Box.BoxChild)(this.hbox5 [this.h2]));
+		w3.Position = 1;
+		w3.Expand = false;
+		w3.Fill = false;
+		// Container child hbox5.Gtk.Box+BoxChild
+		this.sign1 = new global::Gtk.Image ();
+		this.sign1.Name = "sign1";
+		this.hbox5.Add (this.sign1);
+		global::Gtk.Box.BoxChild w4 = ((global::Gtk.Box.BoxChild)(this.hbox5 [this.sign1]));
+		w4.Position = 2;
+		w4.Expand = false;
+		w4.Fill = false;
+		this.hbox2.Add (this.hbox5);
+		global::Gtk.Box.BoxChild w5 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.hbox5]));
+		w5.Position = 0;
+		w5.Expand = false;
+		w5.Fill = false;
+		// Container child hbox2.Gtk.Box+BoxChild
+		this.hbox3 = new global::Gtk.HBox ();
+		this.hbox3.Name = "hbox3";
+		this.hbox3.Spacing = 6;
+		// Container child hbox3.Gtk.Box+BoxChild
+		this.m1 = new global::Gtk.Image ();
+		this.m1.Name = "m1";
+		this.hbox3.Add (this.m1);
+		global::Gtk.Box.BoxChild w6 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.m1]));
+		w6.Position = 0;
+		w6.Expand = false;
+		w6.Fill = false;
+		// Container child hbox3.Gtk.Box+BoxChild
+		this.m2 = new global::Gtk.Image ();
+		this.m2.Name = "m2";
+		this.hbox3.Add (this.m2);
+		global::Gtk.Box.BoxChild w7 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.m2]));
+		w7.Position = 1;
+		w7.Expand = false;
+		w7.Fill = false;
+		// Container child hbox3.Gtk.Box+BoxChild
+		this.sign2 = new global::Gtk.Image ();
+		this.sign2.Name = "sign2";
+		this.hbox3.Add (this.sign2);
+		global::Gtk.Box.BoxChild w8 = ((global::Gtk.Box.BoxChild)(this.hbox3 [this.sign2]));
+		w8.Position = 2;
+		w8.Expand = false;
+		w8.Fill = false;
+		this.hbox2.Add (this.hbox3);
+		global::Gtk.Box.BoxChild w9 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.hbox3]));
+		w9.Position = 1;
+		w9.Expand = false;
+		w9.Fill = false;
+		// Container child hbox2.Gtk.Box+BoxChild
+		this.hbox4 = new global::Gtk.HBox ();
+		this.hbox4.Name = "hbox4";
+		this.hbox4.Spacing = 6;
+		// Container child hbox4.Gtk.Box+BoxChild
+		this.s1 = new global::Gtk.Image ();
+		this.s1.Name = "s1";
+		this.hbox4.Add (this.s1);
+		global::Gtk.Box.BoxChild w10 = ((global::Gtk.Box.BoxChild)(this.hbox4 [this.s1]));
+		w10.Position = 0;
+		w10.Expand = false;
+		w10.Fill = false;
+		// Container child hbox4.Gtk.Box+BoxChild
+		this.s2 = new global::Gtk.Image ();
+		this.s2.Name = "s2";
+		this.hbox4.Add (this.s2);
+		global::Gtk.Box.BoxChild w11 = ((global::Gtk.Box.BoxChild)(this.hbox4 [this.s2]));
+		w11.Position = 1;
+		w11.Expand = false;
+		w11.Fill = false;
+		this.hbox2.Add (this.hbox4);
+		global::Gtk.Box.BoxChild w12 = ((global::Gtk.Box.BoxChild)(this.hbox2 [this.hbox4]));
+		w12.Position = 2;
+		w12.Expand = false;
+		w12.Fill = false;
+		this.hbox1.Add (this.hbox2);
+		global::Gtk.Box.BoxChild w13 = ((global::Gtk.Box.BoxChild)(this.hbox1 [this.hbox2]));
+		w13.Position = 1;
+		w13.Expand = false;
+		w13.Fill = false;
 		this.Add (this.hbox1);
 		if ((this.Child != null)) {
 			this.Child.ShowAll ();
 		}
-		this.DefaultWidth = 400;
+		this.DefaultWidth = 465;
 		this.DefaultHeight = 133;
 		this.Show ();
 		this.DeleteEvent += new global::Gtk.DeleteEventHandler (this.OnDeleteEvent);

@@ -1,28 +1,23 @@
 ﻿using System;
 using Gtk;
 using System.Threading;
+using System.IO;
 
 public partial class MainWindow: Gtk.Window
 {
 	
 	private Thread TimeUpdater;
 	private bool Ended = false;
-	Image[] images = new Image[10];
+	Gdk.Pixbuf[] images = new Gdk.Pixbuf[10];
+	Gdk.Pixbuf signImage = new Gdk.Pixbuf(File.ReadAllBytes("data/sign.png"));
 	public MainWindow () : base (Gtk.WindowType.Toplevel)
 	{
 		Build ();
 		for (int i = 0; i < 10; i++) {
-			images [i] = new Image(String.Format ("/data/{0}.png", i));
+			var buffer = File.ReadAllBytes(String.Format("data/{0}.png",i));
+			images [i] = new Gdk.Pixbuf (buffer);
 		}
-		//sign1 = sign2 = new Image ("data/sign.png");
-		//Gdk.Pixmap pix = new Gdk.Pixmap (new IntPtr ());
-		///		sign1.SetFromImage (new Gdk.Image(, pix);
-		//sign1.File = sign2.File = "/data/0.png";
-		//sign1.SetFromStock("GTK_STOCK_NO",IconSize.Button);
-		sign1 = sign2 = new Image("/data/sign.png");
-		sign1.Show ();
-		sign2.Show ();
-		images [0].Show ();
+		sign1.Pixbuf = sign2.Pixbuf = signImage;
 		TimeUpdater = new Thread(UpdateTime);
 		TimeUpdater.Start ();
 	}
@@ -36,8 +31,14 @@ public partial class MainWindow: Gtk.Window
 	}
 
 	private void UpdateTime (){
-		while (!Ended) { 
-			//time.Text = DateTime.Now.ToString ();
+		while (!Ended) {
+			DateTime now = DateTime.Now;
+			h1.Pixbuf = images [now.Hour / 10];
+			h2.Pixbuf = images [now.Hour % 10];
+			m1.Pixbuf = images [now.Minute / 10];
+			m2.Pixbuf = images [now.Minute % 10];
+			s1.Pixbuf = images [now.Second / 10];
+			s2.Pixbuf = images [now.Second % 10];
 			Thread.Sleep (500);
 		}
 	}

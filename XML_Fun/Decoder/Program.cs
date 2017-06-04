@@ -10,54 +10,65 @@ namespace Decoder
 
 		public static void Main (string[] args)
 		{
+			bool itemFound = false;
 			XmlDocument doc = new XmlDocument ();
 			doc.Load ("data");
-			string result = FindPassword (doc, "password");
-			if (result == "&*NotFound*&") {
+			//Ask for keyword
+			Console.WriteLine("Enter the keyword!");
+			string keyword = Console.ReadLine ();
+			if (String.IsNullOrEmpty (keyword)) {
+				keyword = "password";
+			}
+			//Getting The Result
+			string result = FindPassword (doc, keyword, out itemFound);
+			//Displying the result
+			if (!itemFound) {
 				Console.WriteLine ("Password Not Found.");
 			} else {
-				Console.WriteLine ("Password Is {0}", result);
+				Console.WriteLine ("{0} Is {1}", keyword, result);
 			}
 
 		}
 
-		public static string FindPassword (XmlDocument doc, string keyword){
+		public static string FindPassword (XmlDocument doc, string keyword, out bool foundValue){
+			//Set Up the stack
 			Stack<Node> stack = new Stack<Node>();
-			XmlNode current = doc.FirstChild;
+			stack.Push (new Node(doc.FirstChild));
 			while (true) {
-				if (stack.Count == 0) {
-					stack.Push (new Node(doc.LastChild));
-				}
-				else if (stack.Peek ().FirstTry) {
+				if (stack.Peek ().FirstTry) {
 					stack.Peek ().FirstTry = false;
 					//Examining Itself
-					if (stack.Peek ().node.Name == keyword) {
+					if (String.Equals(stack.Peek ().node.Name, keyword, StringComparison.OrdinalIgnoreCase)) {
+						foundValue = true;
 						return stack.Peek ().node.InnerText;
 					}
 
 					//Examining Attributes
 					var attributes = stack.Peek ().node.Attributes;
 					if (attributes != null) {
+						//Looking through all the attributes
 						for (int i = 0; i < attributes.Count; i++) {
-							if (attributes [i].Name == keyword) {
+							if (String.Equals(attributes [i].Name, keyword, StringComparison.OrdinalIgnoreCase)) {
+								foundValue = true;
 								return attributes [i].Value;
 							}
 						}
 					}
 					//Get Into ChildNodes
 					if (stack.Peek ().node.ChildNodes.Count != 0) {
-						stack.Push (new Node (stack.Peek ().node.FirstChild));
-					}
-
-				}
-				//Going Back
-				else {
-					Node lastNode= stack.Pop ();
+						stack.Push (new Node(stack.Peek ().node.FirstChild));
+					} 
+				}else {
+					//Get Into Siblings/Parents
+					Node lastNode = stack.Pop ();
 					if (lastNode.node.NextSibling != null) {
-						stack.Push(new Node (lastNode.node.NextSibling));
+						//If the node have a sibling, we will examine that sibling next. Else, we return to the parent level.
+						stack.Push(new Node(lastNode.node.NextSibling));
 					}
+					//If we run out of things, too bad lol
 					if (stack.Count == 0) {
-						return "&*NotFound*&";
+						foundValue = false;
+						return "SendHelp";
 					}
 				}
 			}

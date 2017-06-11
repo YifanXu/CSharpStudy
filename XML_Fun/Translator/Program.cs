@@ -15,13 +15,33 @@ namespace Translator
 
 		}
 		public static XmlDocument Decode (string[] input){
-			
-
 			XmlDocument doc = new XmlDocument ();
 			XmlElement root = doc.CreateElement ("root");
 			doc.AppendChild (root);
 			XmlNode rootLevel = doc.FirstChild;
 			XmlNode currentLevel = rootLevel;
+			//Find the Connection Line
+			int endLine = 0;
+			while (input [endLine] != "END") {
+				if (endLine == input.Length - 1) {
+					endLine = -1;
+					break;
+				}
+				endLine++;
+			}
+			//Find Portal Line
+			int portalLine = endLine;
+			if (portalLine != -1) {
+				while (!input [portalLine].StartsWith ("P")) {
+					if (portalLine == input.Length - 1) {
+						portalLine = -1;
+						break;
+					}
+					portalLine++;
+				}
+			}
+
+			//Actual Reading Proccess
 			int line = 0;
 			while(line < input.Length && input[line] != "END")
 			{
@@ -37,6 +57,15 @@ namespace Translator
 					type = nodeType.Room;
 				}
 				rootLevel.AppendChild(doc.CreateElement(type.ToString()));
+				//Setting Up Connections
+				rootLevel.LastChild.AppendChild (doc.CreateElement ("Connections"));
+				string[] roomConnections = FindConnections (input, parameters [1], endLine);
+				AddAttributes(doc,rootLevel.LastChild.LastChild,nodeType.Connections, roomConnections);
+				//Setting Up Portal Connection
+				if (type == nodeType.Portal) {
+					rootLevel.LastChild.AppendChild (doc.CreateElement ("PortalDesination"));
+					rootLevel.LastChild.LastChild.InnerText = FindPortalConnections (input, parameters [1], portalLine);
+				}
 				currentLevel = rootLevel.LastChild;
 				//Attributes
 				AddAttributes(doc,currentLevel,type,parameters);
@@ -109,7 +138,8 @@ namespace Translator
 				{ nodeType.Item, new string[]{ "ID", "Name", "Description", "Obtainable", "obtainMessage", "roomMessage" } },
 				{ nodeType.NormalNPC, new string[]{ "ID", "Name", "PositiveDialouge", "NegativeDialouge" } },
 				{ nodeType.CustomNPC, new string[]{ "ID", "Name", "PositiveDialouge", "NegativeDialouge", "Health", "Damage" }},
-				{ nodeType.MovingNPC, new string[]{ "ID", "Name", "PositiveDialouge", "NegativeDialouge", "Stamina" } }
+				{ nodeType.MovingNPC, new string[]{ "ID", "Name", "PositiveDialouge", "NegativeDialouge", "Stamina" } },
+				{ nodeType.Connections, new string[]{"North","West","East","South"}}
 			};
 
 			for (int i = 1; i < nodeAttributes [type].Length; i++) {
@@ -117,6 +147,45 @@ namespace Translator
 				node.AppendChild (attribute);
 				attribute.InnerText = parameters [i];
 			}
+		}
+		/// <summary>
+		/// Finds the connections of a room.
+		/// </summary>
+		/// <returns>The connections.</returns>
+		/// <param name="input">inputText.</param>
+		/// <param name="id">Identifier.</param>
+		/// <param name="connectionLine">The line where the connection description start.</param>
+		private static string[] FindConnections (string[] input, string id, int endLine){
+			Dictionary<string,int> directions = new Dictionary<string, int> () {
+				{ "N",0 },
+				{ "W",1 },
+				{ "E",2 },
+				{ "S",3 }
+			};
+			string[] connections = new string[4];
+			if (endLine != -1) {
+				for (int i = endLine + 1; i < input.Length; i++) {
+					string[] parameters = input[i].Split ('|');
+					if (parameters [0] == id) {
+						connections [directions [parameters [1]]] = parameters [2];
+					}
+				}
+			}
+			return connections;
+		}
+
+		private static string FindPortalConnections (string[] input, string id, int portalLine){
+			string connection = "";
+			if (portalLine != -1) {
+				for (int i = portalLine + 1; i < input.Length; i++) {
+					string[] parameters = input[i].Split ('|');
+					if (parameters [1] == id) {
+						connection = parameters[2];
+						return connection;
+					}
+				}
+			}
+			return "";
 		}
 	}
 }

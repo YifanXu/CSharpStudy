@@ -9,7 +9,8 @@ namespace Translator
 		Item,
 		NormalNPC,
 		MovingNPC,
-		CustomNPC
+		CustomNPC,
+		Connections
 	}
 }
 

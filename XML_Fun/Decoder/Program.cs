@@ -20,17 +20,16 @@ namespace Decoder
 				keyword = "password";
 			}
 			//Getting The Result
-			string result = FindPassword (doc, keyword, out itemFound);
-			//Displying the result
+			string result = TryFindKeyword (doc, keyword, out itemFound);
+			//Displaying the result
 			if (!itemFound) {
-				Console.WriteLine ("Password Not Found.");
+				Console.WriteLine ("Keyword \"{0}\" was not Found.", keyword);
 			} else {
 				Console.WriteLine ("{0} Is {1}", keyword, result);
 			}
-
 		}
 
-		public static string FindPassword (XmlDocument doc, string keyword, out bool foundValue){
+		public static string TryFindKeyword (XmlDocument doc, string keyword, out bool foundValue){
 			//Set Up the stack
 			Stack<Node> stack = new Stack<Node>();
 			stack.Push (new Node(doc.FirstChild));
@@ -68,7 +67,7 @@ namespace Decoder
 					//If we run out of things, too bad lol
 					if (stack.Count == 0) {
 						foundValue = false;
-						return "SendHelp";
+						return String.Empty;
 					}
 				}
 			}

@@ -130,6 +130,13 @@ namespace Translator
 			return doc;
 		}
 
+		/// <summary>
+		/// Adds the attributes.
+		/// </summary>
+		/// <param name="doc">Document.</param>
+		/// <param name="node">Node.</param>
+		/// <param name="type">Type.</param>
+		/// <param name="parameters">Parameters.</param>
 		private static void AddAttributes(XmlDocument doc, XmlNode node, nodeType type, string[] parameters){
 			Dictionary<nodeType,string[]> nodeAttributes = new Dictionary<nodeType, string[]> {
 				{ nodeType.Room,new string[]{ "ID", "Name", "Description" } },

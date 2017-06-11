@@ -27,27 +27,26 @@ namespace Translator
 			{
 				//Add Room
 				string[] parameters = input[line].Split('|');
-				string Type = "";
+				nodeType type = nodeType.Room;
 				if (parameters[0] == "P")
 				{
-					rootLevel.AppendChild(doc.CreateElement("Portal"));
-					Type = "Portal";
+					type = nodeType.Portal;
 				}
 				else
 				{
-					rootLevel.AppendChild(doc.CreateElement("Room"));
-					Type = "Room";
+					type = nodeType.Room;
 				}
+				rootLevel.AppendChild(doc.CreateElement(type.ToString()));
 				currentLevel = rootLevel.LastChild;
 				//Attributes
-				AddAttributes(doc,currentLevel,Type,parameters);
+				AddAttributes(doc,currentLevel,type,parameters);
 				line++;
 				parameters = input[line].Split('|');
-				if(Type == "Portal" & parameters[0] == "G"){
+				if(type == nodeType.Portal & parameters[0] == "G"){
 					//Add Guardian
 					currentLevel.AppendChild (doc.CreateElement ("Guardian"));
 					currentLevel = currentLevel.LastChild;
-					AddAttributes (doc, currentLevel, "Guardian", parameters);
+					AddAttributes (doc, currentLevel, nodeType.Guardian, parameters);
 					//Return to previous level
 					currentLevel = currentLevel.ParentNode;
 					line++;
@@ -60,7 +59,7 @@ namespace Translator
 				{
 					currentLevel.AppendChild(doc.CreateElement("Item"));
 					currentLevel = currentLevel.LastChild;
-					AddAttributes (doc, currentLevel, "Item", parameters);
+					AddAttributes (doc, currentLevel, nodeType.Item, parameters);
 
 					//Return
 					currentLevel = currentLevel.ParentNode;
@@ -76,22 +75,22 @@ namespace Translator
 					parameters = input[line].Split('|');
 					if (input[line].StartsWith("M"))
 					{
-						Type = "MovingNPC";
+						type = nodeType.MovingNPC;
 					}
 					else
 					{
 						if (parameters.Length == 7)
 						{
-							Type = "CustomNPC";
+							type = nodeType.CustomNPC;
 						}
 						else
 						{
-							Type = "NormalNPC";
+							type = nodeType.NormalNPC;
 						}
 					}
-					currentLevel.AppendChild(doc.CreateElement(Type));
+					currentLevel.AppendChild (doc.CreateElement (type.ToString ()));
 					currentLevel = currentLevel.LastChild;
-					AddAttributes (doc, currentLevel, Type, parameters);
+					AddAttributes (doc, currentLevel, type, parameters);
 					//REturn
 					currentLevel = currentLevel.ParentNode;
 					line++;
@@ -102,19 +101,19 @@ namespace Translator
 			return doc;
 		}
 
-		private static void AddAttributes(XmlDocument doc, XmlNode node, string type, string[] parameters){
-			Dictionary<string,string[]> nodeAttributes = new Dictionary<string, string[]> {
-				{ "Room",new string[]{ "ID", "Name", "Description" } },
-				{ "Portal",new string[]{ "ID", "Name", "Description", "Fee" } },
-				{ "Guardian", new string[]{ "ID", "Name", "Dialouge", "Health", "Damage" } },
-				{ "Item", new string[]{ "ID", "Name", "Description", "Obtainable", "obtainMessage", "roomMessage" } },
-				{ "NormalNPC", new string[]{ "ID", "Name", "PositiveDialouge", "NegativeDialouge" } },
-				{"CustomNPC", new string[]{ "ID", "Name", "PositiveDialouge", "NegativeDialouge", "Health", "Damage" }},
-				{ "MovingNPC", new string[]{ "ID", "Name", "PositiveDialouge", "NegativeDialouge", "Stamina" } }
+		private static void AddAttributes(XmlDocument doc, XmlNode node, nodeType type, string[] parameters){
+			Dictionary<nodeType,string[]> nodeAttributes = new Dictionary<nodeType, string[]> {
+				{ nodeType.Room,new string[]{ "ID", "Name", "Description" } },
+				{ nodeType.Portal,new string[]{ "ID", "Name", "Description", "Fee" } },
+				{ nodeType.Guardian, new string[]{ "ID", "Name", "Dialouge", "Health", "Damage" } },
+				{ nodeType.Item, new string[]{ "ID", "Name", "Description", "Obtainable", "obtainMessage", "roomMessage" } },
+				{ nodeType.NormalNPC, new string[]{ "ID", "Name", "PositiveDialouge", "NegativeDialouge" } },
+				{ nodeType.CustomNPC, new string[]{ "ID", "Name", "PositiveDialouge", "NegativeDialouge", "Health", "Damage" }},
+				{ nodeType.MovingNPC, new string[]{ "ID", "Name", "PositiveDialouge", "NegativeDialouge", "Stamina" } }
 			};
 
 			for (int i = 1; i < nodeAttributes [type].Length; i++) {
-				var attribute = doc.CreateElement(nodeAttributes[type][i]);
+				var attribute = doc.CreateElement(nodeAttributes[type][i - 1]);
 				node.AppendChild (attribute);
 				attribute.InnerText = parameters [i];
 			}

@@ -34,6 +34,9 @@ namespace RocketFinances
 			}
 		}
         
+        /// <summary>
+        /// IT IS BREAKABLE PLZ DON'T USE IT
+        /// </summary>
         public int maxSimutaniousOffsprings
         {
             get

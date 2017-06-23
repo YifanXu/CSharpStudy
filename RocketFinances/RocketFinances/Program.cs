@@ -1,25 +1,59 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
+using System.Xml;
+using System.Xml.Serialization;
+
 
 namespace RocketFinances
 {
 	class MainClass
 	{
-		public static void Main (string[] args)
-		{
-			
-		}
+        public static void Main(string[] args)
+        {
+            const int cost = 10000;
+            Task root = getTaskFromFile("data.xml");
 
-		public static int GetTotalCost (Task rootTask){
-			const int cost = 10000;
+            int time = GetTotalTime(root);
+            Console.WriteLine("Total Estimated Cost: ${0}.00 (Total Time is {1})", time*cost, time);
+            Console.WriteLine("Shortest Predicted Time: {0}", root.maxRequiredTime);
+            Console.WriteLine("Contracts Needed: {0}", root.maxSimutaniousOffsprings);
+
+            Console.ReadLine();
+        }
+
+        public static Task getTaskFromFile(string path)
+        {
+            //Get Rooms
+            if (!File.Exists(path))
+            {
+                return null;
+            }
+            TaskPackage package;
+            var serializer = new XmlSerializer(typeof(TaskPackage));
+            using (Stream s = new FileStream(path, FileMode.Open, FileAccess.Read))
+            {
+               package = (TaskPackage) serializer.Deserialize(s);
+            }
+
+            //Get Connections
+            foreach (TaskConnection connection in package.connections)
+            {
+                package[connection.baseTask].requirements.Add(package[connection.predecessor]);
+            }
+
+            return package.tasks[package.finalTaskPosition];
+        }
+
+		public static int GetTotalTime (Task rootTask){
 
 			List<Task> allTasks = GetAllTasks (rootTask);
 			//Count up the total
-			int totalCost = 0;
+			int totalTime = 0;
 			foreach (Task task in allTasks) {
-				totalCost += task.time*cost;
+				totalTime += task.time;
 			}
-			return totalCost;
+			return totalTime;
 		}
 
 		public static List<Task> GetAllTasks (Task finalTask){
@@ -43,7 +77,7 @@ namespace RocketFinances
 					if (memeberAlreadyExists) {
 						continue;
 					}
-					newLayerMember.AddRange (member.dependentTasks);
+					newLayerMember.AddRange (member.requirements);
 					countedTasks.Add (member);
 				}
 			}
@@ -51,8 +85,5 @@ namespace RocketFinances
 			return countedTasks;
 		}
 
-		public static int GetShortestTime(Task rootTask){
-			
-		}
 	}
 }

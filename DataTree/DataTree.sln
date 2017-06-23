@@ -1,22 +1,17 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25123.0
-MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataTree", "DataTree\DataTree.csproj", "{41A54E1D-9EE9-4E88-90CD-44B7FE866E2D}"
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DataTree", "DataTree\DataTree.csproj", "{4E9997AC-039A-4A41-9D2D-9DC6C55D9071}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
-		Debug|Any CPU = Debug|Any CPU
-		Release|Any CPU = Release|Any CPU
+		Debug|x86 = Debug|x86
+		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{41A54E1D-9EE9-4E88-90CD-44B7FE866E2D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{41A54E1D-9EE9-4E88-90CD-44B7FE866E2D}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{41A54E1D-9EE9-4E88-90CD-44B7FE866E2D}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{41A54E1D-9EE9-4E88-90CD-44B7FE866E2D}.Release|Any CPU.Build.0 = Release|Any CPU
-	EndGlobalSection
-	GlobalSection(SolutionProperties) = preSolution
-		HideSolutionNode = FALSE
+		{4E9997AC-039A-4A41-9D2D-9DC6C55D9071}.Debug|x86.ActiveCfg = Debug|x86
+		{4E9997AC-039A-4A41-9D2D-9DC6C55D9071}.Debug|x86.Build.0 = Debug|x86
+		{4E9997AC-039A-4A41-9D2D-9DC6C55D9071}.Release|x86.ActiveCfg = Release|x86
+		{4E9997AC-039A-4A41-9D2D-9DC6C55D9071}.Release|x86.Build.0 = Release|x86
 	EndGlobalSection
 EndGlobal

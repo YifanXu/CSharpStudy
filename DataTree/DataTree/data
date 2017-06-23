@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<Node xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<data>230</data>
+	<children>
+		<Node>
+			<data>1</data>
+			<children>
+				<Node>
+					<data>2</data>
+					<children>
+					</children>
+				</Node>
+				<Node>
+					<data>2</data>
+					<children>
+					</children>
+				</Node>
+			</children>
+		</Node>
+		<Node>
+			<data>5</data>
+			<children>
+			</children>
+		</Node>
+	</children>
+</Node>

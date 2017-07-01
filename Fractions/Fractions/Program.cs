@@ -4,19 +4,15 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Soduku
+namespace Fractions
 {
     class Program
     {
         static void Main(string[] args)
         {
-            Soduku test = new Soduku("Soduku4.txt");
-            if (test.TrySolve())
-            {
-                Console.ForegroundColor = ConsoleColor.Green;
-            }
-
-            test.Display();
+            Fraction test = new Fraction(1, 3);
+            Console.WriteLine(test.approxInt.ToString());
+            Console.WriteLine(test.approxDecimal.ToString());
 
             Console.ReadLine();
         }

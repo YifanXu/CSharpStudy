@@ -153,13 +153,11 @@ namespace Soduku
 
         private bool SolveByBruteForce()
         {
-            Soduku testingSoduku = new Soduku();
             List<SodukuNode> mysteryNodes = new List<SodukuNode>();
             for (int x = 0; x < size; x++)
             {
                 for (int y = 0; y < size; y++)
                 {
-                    testingSoduku[x, y] = this[x, y];
                     if (values[x, y] == 0)
                     {
                         mysteryNodes.Add(new SodukuNode(x, y, GetPossibleValues(x, y)));
@@ -170,12 +168,13 @@ namespace Soduku
             {
                 for(int i = 0; i < node.possibleValues.Count; i++)
                 {
-                    testingSoduku[node.x, node.y] = node.possibleValues[i];
-                    if (testingSoduku.TrySolve())
+                    this[node.x, node.y] = node.possibleValues[i];
+                    if (TrySolve())
                     {
                         this[node.x, node.y] = node.possibleValues[i];
                         return true;
                     }
+                    this[node.x, node.y] = 0;
                 }
             }
             return false;

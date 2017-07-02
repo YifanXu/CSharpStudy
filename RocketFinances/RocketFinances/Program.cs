@@ -12,9 +12,9 @@ namespace RocketFinances
         public static void Main(string[] args)
         {
             const int cost = 10000;
-            Task root = getTaskFromFile("data.xml");
+			Task root = GetTaskFromFile("data.xml");
 
-            int time = GetTotalTime(root);
+			int time = GetAmountOfTime(root);
             Console.WriteLine("Total Estimated Cost: ${0}.00 (Total Time is {1})", time*cost, time);
             Console.WriteLine("Shortest Predicted Time: {0}", root.maxRequiredTime);
             Console.WriteLine("Contracts Needed: {0} ({1})", GetMaxSimutaniousOffSprings(root), root.maxSimutaniousOffsprings);
@@ -22,7 +22,24 @@ namespace RocketFinances
             Console.ReadLine();
         }
 
-        public static Task getTaskFromFile(string path)
+		private class Compare : IEqualityComparer<Task>
+		{
+			public bool Equals (Task x, Task y){
+				return object.ReferenceEquals (x, y);
+			}
+
+			public int GetHashCode (Task task)
+			{
+				return task.GetHashCode ();
+			}
+
+		}
+		/// <summary>
+		/// Don't worry abput it
+		/// </summary>
+		/// <returns>The final task from file.</returns>
+		/// <param name="path">XML Document Path</param>
+        public static Task GetTaskFromFile(string path)
         {
             //Get Rooms
             if (!File.Exists(path))
@@ -36,65 +53,34 @@ namespace RocketFinances
                package = (TaskPackage) serializer.Deserialize(s);
             }
 
-            //Get Connections
-            foreach (TaskConnection connection in package.connections)
-            {
-                package[connection.baseTask].requirements.Add(package[connection.predecessor]);
-            }
-
-            return package.tasks[package.finalTaskPosition];
+			return package.Assemble();
         }
 
-		public static int GetTotalTime (Task rootTask){
+		public static int GetAmountOfTime (Task rootTask){
 
-			List<Task> allTasks = GetAllTasks (rootTask);
-			//Count up the total
+			List<Task> tasks = new List<Task> ();
+			rootTask.GetAllRequiredTasks (tasks);
 			int totalTime = 0;
-			foreach (Task task in allTasks) {
+			foreach (Task task in tasks) {
 				totalTime += task.time;
 			}
 			return totalTime;
 		}
 
-		public static List<Task> GetAllTasks (Task finalTask){
-			List<Task> countedTasks = new List<Task> ();
-			List<Task> layerMember = new List<Task> ();
-			List<Task> newLayerMember = new List<Task> { finalTask };
-			while (newLayerMember.Count != 0) {
-				layerMember.Clear ();
-				layerMember.AddRange (newLayerMember);
-				newLayerMember.Clear ();
 
-				foreach (Task member in layerMember) {
-					//Checking if the memeber is already counted
-					bool memeberAlreadyExists = false;
-					foreach (Task countedTask in countedTasks) {
-						if(object.ReferenceEquals(countedTask,member)){
-							memeberAlreadyExists = true;
-							break;
-						}
-					}
-					if (memeberAlreadyExists) {
-						continue;
-					}
-					newLayerMember.AddRange (member.requirements);
-					countedTasks.Add (member);
-				}
-			}
-
-			return countedTasks;
-		}
-
+		private static readonly Compare comparer = new Compare ();
 
         public static int GetMaxSimutaniousOffSprings(Task root)
         {
-            List<Task> allTask = GetAllTasks(root);
-            Dictionary<Task, int> timeTable = new Dictionary<Task, int>();
+			List<Task> allTask = new List<Task>();
+			root.GetAllRequiredTasks (allTask);
+			Dictionary<Task, int> timeTable = new Dictionary<Task, int>(comparer);
             foreach(Task task in allTask)
             {
                 timeTable.Add(task, task.time);
             }
             List<Task> currentTasks = new List<Task>() { root };
+
             int maxSimuTask = 1;
 
             //Time

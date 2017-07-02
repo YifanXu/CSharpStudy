@@ -12,11 +12,6 @@ namespace Soduku
         public int size = 9;
         private int[,] values;
 
-        public Soduku()
-        {
-            values = new int[9, 9];
-        }
-
         public Soduku(string path)
         {
             if (!File.Exists(path))
@@ -111,73 +106,40 @@ namespace Soduku
             }
         }
 
-        public bool TrySolve()
+        public bool SolveByBruteForce()
         {
-            bool bruteForceSuccess = true;
-            while (bruteForceSuccess)
-            {
-                bool TrySuccess = true;
-                while (TrySuccess)
-                {
-                    bool solved = true;
-                    TrySuccess = false;
-                    for (int x = 0; x < size; x++)
-                    {
-                        for (int y = 0; y < size; y++)
-                        {
-                            if (values[x, y] == 0)
-                            {
-                                solved = false;
-                                List<int> possibilities = GetPossibleValues(x, y);
-                                if (possibilities.Count == 0)
-                                {
-                                    return false;
-                                }
-                                if (possibilities.Count == 1)
-                                {
-                                    this[x, y] = possibilities[0];
-                                    TrySuccess = true;
-                                }
-                            }
-                        }
-                    }
-                    if (solved)
-                    {
-                        return true;
-                    }
-                }
-                bruteForceSuccess = SolveByBruteForce();
-            }
-            return false;
-        }
-
-        private bool SolveByBruteForce()
-        {
-            List<SodukuNode> mysteryNodes = new List<SodukuNode>();
+			Stack<SodukuNode> nodes = new Stack<SodukuNode> ();
             for (int x = 0; x < size; x++)
             {
                 for (int y = 0; y < size; y++)
                 {
                     if (values[x, y] == 0)
                     {
-                        mysteryNodes.Add(new SodukuNode(x, y, GetPossibleValues(x, y)));
+                        nodes.Push(new SodukuNode(x, y, GetPossibleValues(x, y)));
                     }
                 }
             }
-            foreach(SodukuNode node in mysteryNodes)
-            {
-                for(int i = 0; i < node.possibleValues.Count; i++)
-                {
-                    this[node.x, node.y] = node.possibleValues[i];
-                    if (TrySolve())
-                    {
-                        this[node.x, node.y] = node.possibleValues[i];
-                        return true;
-                    }
-                    this[node.x, node.y] = 0;
-                }
-            }
-            return false;
+			return SolveByBruteForce (nodes);
         }
+
+		public bool SolveByBruteForce(Stack<SodukuNode> nodes){
+			if (nodes.Count == 0) {
+				return true;
+			}
+			SodukuNode node = nodes.Pop ();
+			List<int> possibilities = GetPossibleValues (node.x, node.y);
+			if (possibilities.Count == 0) {
+				nodes.Push (node);
+				return false;
+			}
+			foreach (int possibility in possibilities) {
+				values [node.x, node.y] = possibility;
+				if (SolveByBruteForce (nodes)) {
+					return true;
+				}
+			}
+			nodes.Push (node);
+			return false;
+		}
     }
 }

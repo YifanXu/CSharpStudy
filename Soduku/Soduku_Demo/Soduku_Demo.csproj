@@ -1,12 +1,12 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{BF537674-232B-4B80-B7FA-D22265DDD1ED}</ProjectGuid>
+    <ProjectGuid>{16069284-54BD-422F-B27E-3C7091180D6F}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>RocketFinances</RootNamespace>
-    <AssemblyName>RocketFinances</AssemblyName>
+    <RootNamespace>Soduku_Demo</RootNamespace>
+    <AssemblyName>Soduku_Demo</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -31,20 +31,36 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Xml.Serialization" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Task.cs" />
-    <Compile Include="TaskPackage.cs" />
-    <Compile Include="NewTask.cs" />
+    <Compile Include="..\Soduku\Program.cs">
+      <Link>Program.cs</Link>
+    </Compile>
+    <Compile Include="..\Soduku\Soduku.cs">
+      <Link>Soduku.cs</Link>
+    </Compile>
+    <Compile Include="..\Soduku\SodukuNode.cs">
+      <Link>SodukuNode.cs</Link>
+    </Compile>
   </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
-    <None Include="data.xml">
+    <None Include="..\Soduku\Soduku1.txt">
+      <Link>Soduku1.txt</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Soduku\Soduku2.txt">
+      <Link>Soduku2.txt</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Soduku\Soduku3.txt">
+      <Link>Soduku3.txt</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="..\Soduku\Soduku4.txt">
+      <Link>Soduku4.txt</Link>
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-  <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

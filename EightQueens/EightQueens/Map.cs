@@ -95,6 +95,7 @@ namespace EightQueens
 
         public void display(IDictionary<MapTile,ConsoleColor> colors)
         {
+			System.Threading.Thread.Sleep (1000);
             Console.SetCursorPosition(0, 0);
 
             for(int y= 0; y < mapSize; y++)

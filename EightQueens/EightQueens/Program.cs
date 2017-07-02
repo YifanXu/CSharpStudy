@@ -20,7 +20,7 @@ namespace EightQueens
             Map map = new Map(8, 8);
             if (map[0].tryPosition(map))
             {
-                //map.display(colors);
+                map.display(colors);
             }
             else
             {

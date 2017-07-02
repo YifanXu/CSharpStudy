@@ -10,8 +10,8 @@ namespace Soduku
     {
         static void Main(string[] args)
         {
-            Soduku test = new Soduku("Soduku4.txt");
-            if (test.TrySolve())
+            Soduku test = new Soduku("Soduku1.txt");
+			if (test.SolveByBruteForce())
             {
                 Console.ForegroundColor = ConsoleColor.Green;
             }

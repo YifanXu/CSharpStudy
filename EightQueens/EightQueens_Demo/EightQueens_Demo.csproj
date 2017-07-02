@@ -1,12 +1,12 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
-    <ProjectGuid>{BF537674-232B-4B80-B7FA-D22265DDD1ED}</ProjectGuid>
+    <ProjectGuid>{A037CD32-A287-4712-A61C-D7ED801763EB}</ProjectGuid>
     <OutputType>Exe</OutputType>
-    <RootNamespace>RocketFinances</RootNamespace>
-    <AssemblyName>RocketFinances</AssemblyName>
+    <RootNamespace>EightQueens_Demo</RootNamespace>
+    <AssemblyName>EightQueens_Demo</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
@@ -31,20 +31,21 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
-    <Reference Include="System.Xml.Serialization" />
-    <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Task.cs" />
-    <Compile Include="TaskPackage.cs" />
-    <Compile Include="NewTask.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="data.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </None>
+    <Compile Include="..\EightQueens\Map.cs">
+      <Link>Map.cs</Link>
+    </Compile>
+    <Compile Include="..\EightQueens\MapTile.cs">
+      <Link>MapTile.cs</Link>
+    </Compile>
+    <Compile Include="..\EightQueens\Queen.cs">
+      <Link>Queen.cs</Link>
+    </Compile>
+    <Compile Include="..\EightQueens\Program.cs">
+      <Link>Program.cs</Link>
+    </Compile>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
 </Project>

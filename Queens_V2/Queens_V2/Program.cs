@@ -8,7 +8,7 @@ namespace Queens_V2
 		{
 			
 			int[] QueensByX = new int[8];
-			SolveWithRecursion (QueensByX);
+			SolvePositions (QueensByX);
 			Display (QueensByX);
 		}
 		 

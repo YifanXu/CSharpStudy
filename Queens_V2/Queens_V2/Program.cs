@@ -13,25 +13,39 @@ namespace Queens_V2
 		}
 		 
 		public static bool IsPositionValid (int[] queens, int currentQueen){
+			var currentQueeunPosition = queens[currentQueen];
 			for(int i = 0; i < currentQueen; i++) {
-				if (queens[currentQueen] == queens[i] || Math.Abs(i - currentQueen) == Math.Abs(queens[i] - queens[currentQueen])) {
+				if (currentQueeunPosition == queens[i] || Math.Abs(i - currentQueen) == Math.Abs(queens[i] - currentQueeunPosition)) {
 					return false;
 				}
 			}
 			return true;
 		}
 
-		public static void SolvePositions(int[] queens){
-			for (int i = 0; i < queens.Length; i++) {
-				if(!IsPositionValid(queens,i) || queens[i] > 7){
-					if (queens [i] >= 7) {
-						queens [i] = 0;
-						i --;
+		public static bool SolvePositions(int[] queens){
+			var queenId = 0;
+			while (queenId < 8) {
+				if (IsPositionValid (queens, queenId)) {
+					queenId++;
+					continue;
+				}
+
+				while(true)
+				{
+					var nextPosition = queens[queenId] + 1;
+					if (nextPosition < 8) {
+						queens [queenId] = nextPosition;
+						break;
 					}
-					queens [i]++;
-					i--;
+
+					queens[queenId] = 0;
+					if (--queenId < 0) {
+						return false;
+					}
 				}
 			}
+
+			return true;
 		}
 
 		public static bool SolveWithRecursion(int[] queens, int position){

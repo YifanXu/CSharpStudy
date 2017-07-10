@@ -52,10 +52,9 @@ namespace Project_Atron
         public string displayer;
         public int level;
 
-        public Question (int level)
+        public Question (int level, Random r)
         {
             this.level = level;
-            Random r = new Random();
 
             do
             {

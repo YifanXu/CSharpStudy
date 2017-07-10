@@ -14,6 +14,8 @@ namespace Project_Atron
 
         public Calculation(string path)
         {
+            Random r = new Random();
+
             //ReadIn Question Amounts
             string[] input = File.ReadAllLines("data.txt");
             questionsNeeded = new int[5];
@@ -32,7 +34,7 @@ namespace Project_Atron
             {
                 while(questionsNeeded[i] > 0)
                 {
-                    questions[count] = new Question(i+1);
+                    questions[count] = new Question(i+1, r);
                     questionsNeeded[i]--;
                     count++;
                 }
@@ -64,6 +66,8 @@ namespace Project_Atron
                     Write(ConsoleColor.Green, String.Format("Correct! You solved it in {0} seconds.", points[i]));
                 }
             }
+
+
         }
 
         private void Write(ConsoleColor color, string text)

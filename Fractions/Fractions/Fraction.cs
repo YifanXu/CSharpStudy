@@ -114,7 +114,16 @@ namespace Fractions
                 b.Simplify();
                 return (a == b.numerator && b.denominator == 1);
             }
+            if (obj.GetType() == typeof(double))
+            {
+                double a = (double)obj;
+                return (a == this.ApproxDecimal);
+            }
             return base.Equals(obj);
+        }
+        public static bool operator =(Fraction a, object b)
+        {
+            return a.Equals(b);
         }
 
         //ADDITIONS

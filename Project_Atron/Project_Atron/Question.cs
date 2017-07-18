@@ -9,11 +9,18 @@ namespace Project_Atron
     public class Question
     {
         private static Dictionary<char, Func<int,int,int>> calculation = new Dictionary<char,Func<int,int,int>>{
+            {'a', Add },
+            {'s', Subtract },
             {'^', Power },
             {'*', Multiply },
             {'/', Divide },
             {'+', Add },
             {'-', Subtract }
+        };
+        private static Dictionary<char, char> specialChar = new Dictionary<char, char>
+        {
+            {'a', '+'},
+            {'s', '-'}
         };
         private static Dictionary<int, char[]> allowedOperations = new Dictionary<int, char[]>
         {
@@ -21,7 +28,7 @@ namespace Project_Atron
             {2, new char[] {'+', '-'} },
             {3, new char[] {'+', '-'} },
             {4, new char[] {'*', '+', '-'} },
-            {5, new char[] {'*', '+', '-'} },
+            {5, new char[] {'*', '+', '-','a','s'} },
         };
         private static Dictionary<int, int> numberLimit = new Dictionary<int, int>
         {
@@ -72,7 +79,11 @@ namespace Project_Atron
                 char[] ops = allowedOperations[level];
                 for (int i = 0; i < memberCount - 1; i++)
                 {
-                    operations[i] = ops[r.Next(ops.Length)];
+                    do
+                    {
+                        operations[i] = ops[r.Next(ops.Length)];
+                    }
+                    while (i > 0 && specialChar.ContainsKey(operations[i - 1]) && specialChar.ContainsKey(operations[i]));
                 }
             } while (this.Answer > resultLimit[level] || this.Answer < 0);
 
@@ -149,11 +160,37 @@ namespace Project_Atron
         private void BuildString()
         {
             StringBuilder s = new StringBuilder();
+            bool parenthesesExist = false;
             for (int i = 0; i < operations.Length; i++){
-                s.Append(numbers[i]);
-                s.Append(operations[i]);
+                char op = operations[i];
+                if (parenthesesExist)
+                {
+                    parenthesesExist = false;
+                    s.Append(numbers[i]);
+                    s.Append(")");
+                }
+                else
+                {
+                    if (specialChar.TryGetValue(op, out op))
+                    {
+                        parenthesesExist = true;
+                        s.Append("(");
+                    }
+                    else
+                    {
+                        op = operations[i];
+                    }
+                    s.Append(numbers[i]);
+                }
+                
+                s.Append(op);
             }
             s.Append(numbers[operations.Length]);
+            if (parenthesesExist)
+            {
+                parenthesesExist = false;
+                s.Append(")");
+            }
             displayer = s.ToString();
         }
     }

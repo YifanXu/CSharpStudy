@@ -32,7 +32,7 @@ public class PlayerScript : MonoBehaviour {
             dir = new Vector3(-Speed * Time.deltaTime, 0, 0);
         }
 
-        this.transform.position+= dir;
+        this.GetComponent<Rigidbody>().AddForce(dir,ForceMode.Acceleration);
 
         if(this.transform.position.y < -10)
         {

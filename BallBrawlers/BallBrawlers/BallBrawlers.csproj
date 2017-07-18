@@ -87,6 +87,7 @@
     <Compile Include="Assets\EnemyScript.cs" />
     <Compile Include="Assets\FloorScript.cs" />
     <Compile Include="Assets\GameController.cs" />
+    <Compile Include="Assets\ParticleScript.cs" />
     <Compile Include="Assets\PlayerScript.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

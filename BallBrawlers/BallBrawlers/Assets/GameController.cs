@@ -9,6 +9,8 @@ public class GameController : MonoBehaviour {
     public static GameController currentInstance { get; private set; }
     public int NumberOfEnemies;
     public GameObject enemyPrefab;
+    public int AmountOfParticles;
+    public GameObject particlePrefab;
 
 	// Use this for initialization
 	void Start () {
@@ -27,7 +29,9 @@ public class GameController : MonoBehaviour {
             enemies.Add(i, GameObject.Instantiate(enemyPrefab));
             enemies[i].transform.position += new Vector3(r.Next(-20,20),0,r.Next(-20,20));
         }
-	}
+
+        SpawnParticles(0, 5, 0, AmountOfParticles);
+    }
 	
 	// Update is called once per frame
 	void Update () {
@@ -36,12 +40,22 @@ public class GameController : MonoBehaviour {
 
     public void HandleDestruction(int id)
     {
-        Destroy(enemies[id].gameObject);
+        GameObject obj = enemies[id].gameObject;
+        Destroy(obj);
         enemies.Remove(id);
 
         if(enemies.Count == 0)
         {
             SceneManager.LoadScene("EndScene");
+        }
+    }
+
+    private void SpawnParticles (int x, int y, int z, int amouunt)
+    {
+        for (int i = 0; i < AmountOfParticles; i++)
+        {
+            var particle = GameObject.Instantiate(particlePrefab);
+            particle.transform.position += new Vector3(x, y, z);
         }
     }
 }

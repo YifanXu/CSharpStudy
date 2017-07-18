@@ -43,6 +43,7 @@ namespace Project_Atron
 
         public void Display()
         {
+            int correctQuestions = 0;
             points = new int[totalQuestions];
             for(int i = 0; i < points.Length; i++)
             {
@@ -63,11 +64,21 @@ namespace Project_Atron
                 }
                 else
                 {
+                    correctQuestions++;
                     Write(ConsoleColor.Green, String.Format("Correct! You solved it in {0} seconds.", points[i]));
                 }
+                Write(ConsoleColor.White, "Type \"Enter\" to continue...");
+                Console.ReadLine();
+                Console.Clear();
             }
 
-
+            Write(ConsoleColor.Cyan, String.Format("You have finished with a accuracy score of {0}/{1} ({2}%)", correctQuestions, totalQuestions, correctQuestions*100/totalQuestions));
+            Write(ConsoleColor.White, "Type \"Retry\" to try again");
+            if(Console.ReadLine().ToLower() == "retry")
+            {
+                Console.Clear();
+                Display();
+            }
         }
 
         private void Write(ConsoleColor color, string text)

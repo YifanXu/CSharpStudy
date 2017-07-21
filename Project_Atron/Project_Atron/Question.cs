@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 namespace Project_Atron
 {
+    //This class is currently retired, as the new expressions has taken over.
     public class Question
     {
         private static Dictionary<char, Func<int,int,int>> calculation = new Dictionary<char,Func<int,int,int>>{
@@ -22,38 +23,17 @@ namespace Project_Atron
             {'a', '+'},
             {'s', '-'}
         };
-        private static Dictionary<int, char[]> allowedOperations = new Dictionary<int, char[]>
+        private static char[][] allowedOperations = new char[][]
         {
-            {1, new char[] {'+', '-'} },
-            {2, new char[] {'+', '-'} },
-            {3, new char[] {'+', '-'} },
-            {4, new char[] {'*', '+', '-'} },
-            {5, new char[] {'*', '+', '-','a','s'} },
+            new char[] {'+', '-'},
+            new char[] {'+', '-'},
+            new char[] {'+', '-'},
+            new char[] {'*', '+', '-'},
+            new char[] {'*', '+', '-','a','s'}
         };
-        private static Dictionary<int, int> numberLimit = new Dictionary<int, int>
-        {
-            {1, 10 },
-            {2, 50 },
-            {3, 100 },
-            {4, 100 },
-            {5, 10 }
-        };
-        private static Dictionary<int, int> resultLimit = new Dictionary<int, int>
-        {
-            {1, 10 },
-            {2, 50 },
-            {3, 100 },
-            {4, 100 },
-            {5, 10 }
-        };
-        private static Dictionary<int, int> memberCountLimit = new Dictionary<int, int>
-        {
-            {1, 2 },
-            {2, 2 },
-            {3, 3 },
-            {4, 3 },
-            {5, 3 }
-        };
+        private static int[] numberLimit = new int[] { 10, 50, 100, 100, 10 };
+        private static int[] resultLimit = new int[] { 10, 50, 100, 100, 10 };
+        private static int[] memberCountLimit = new int[] { 2, 2, 3, 3, 3 };
         public int[] numbers;
         public char[] operations;
         public string displayer;

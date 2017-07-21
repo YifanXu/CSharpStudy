@@ -11,11 +11,13 @@ namespace Project_Atron
         static void Main(string[] args)
         {
             Calculation c = new Calculation("data.txt");
-            c.Display();            
+            c.Display();  
+
+
+            //Expression test = new Expression(new Random(), 3);
+            //Console.WriteLine("{0} = {1}",test,test.Value);      
 
             Console.ReadLine();
         }
-
-        
     }
 }

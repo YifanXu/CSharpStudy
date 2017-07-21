@@ -9,7 +9,7 @@ namespace Project_Atron
     {
         public int[] questionsNeeded;
         public int totalQuestions = 0;
-        public Question[] questions;
+        public Expression[] questions;
         public int[] points;
 
         public Calculation(string path)
@@ -28,13 +28,13 @@ namespace Project_Atron
             }
 
             //Generate Questions
-            questions = new Question[totalQuestions];
+            questions = new Expression[totalQuestions];
             int count = 0;
             for(int i = 0; i < questionsNeeded.Length; i++)
             {
                 while(questionsNeeded[i] > 0)
                 {
-                    questions[count] = new Question(i+1, r);
+                    questions[count] = new Expression(r, i);
                     questionsNeeded[i]--;
                     count++;
                 }
@@ -47,16 +47,16 @@ namespace Project_Atron
             points = new int[totalQuestions];
             for(int i = 0; i < points.Length; i++)
             {
-                Question current = questions[i];
+                Expression current = questions[i];
                 //Console.SetCursorPosition(0, 0);
                 Write(ConsoleColor.Cyan,String.Format("Question {0}/{1} (Level {2})",i + 1,totalQuestions, current.level));
                 DateTime startTime = DateTime.Now;
-                Write(ConsoleColor.White, current.displayer);
+                Write(ConsoleColor.White, current.ToString());
                 string answer = Console.ReadLine();
                 DateTime endTime = DateTime.Now;
                 points[i] = (endTime.Hour - startTime.Hour) * 3600 + (endTime.Minute - startTime.Minute) * 60 + endTime.Second - startTime.Second;
                 int parsedAnswer;
-                int correctAnswer = current.Answer;
+                int correctAnswer = current.Value;
                 if(!int.TryParse(answer, out parsedAnswer) || parsedAnswer != correctAnswer)
                 {
                     points[i] = 0;

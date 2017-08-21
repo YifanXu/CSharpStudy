@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Project_Atron
+namespace Calculation_Test
 {
     public class Expression
     {
@@ -16,22 +16,24 @@ namespace Project_Atron
             {'-', Subtract }
         };
 
+        public static Level[] Levels;
+
         //----------BELOW ARE ALL PART OF GENERATOR STARTER PACK---------------
         private static char[][] allowedOperations = new char[][]
-{
+        {
             new char[] {'+', '-'},
             new char[] {'+', '-'},
             new char[] {'+', '-'},
             new char[] {'*', '+', '-'},
             new char[] {'*', '+', '-',}
-};
+        };
         private static int[] numberLimit = new int[] { 10, 50, 100, 100, 10 };
         private static int[] resultLimit = new int[] { 10, 50, 100, 100, 10 };
         private static int[] memberCountLimit = new int[] { 2, 2, 3, 3, 3 };
         private static bool[] allowParantheses = new bool[] { false, false, false, false, true };
         //---------ABOVE ARE ALL PART OF GENERATOR STARTER PACK---------------
 
-        private static char[] operatorsByOrder = new char[] { '-', '+', '*', '/', '^'};
+        private static char[] operatorsByOrder = new char[] { '+', '-', '*', '/', '^'};
 
         public bool isInt;
         public int directValue;
@@ -67,7 +69,7 @@ namespace Project_Atron
         
 
         //Random Generation
-        public Expression(Random r, int level) : this(r,level,memberCountLimit[level])
+        public Expression(Random r, int level) : this(r,level,Levels[level].memberCountLimit)
         {
 
         }
@@ -77,7 +79,7 @@ namespace Project_Atron
             this.level = level;
             if(memberCount == 1)
             {
-                this.directValue = r.Next(numberLimit[level]);
+                this.directValue = r.Next(Levels[level].numberLimit);
                 this.isInt = true;
                 return;
             }
@@ -88,12 +90,12 @@ namespace Project_Atron
                 firstElement = new Expression(r, level, firstElementSplit);
                 secondElement = new Expression(r, level, memberCount - firstElementSplit);
 
-                char[] ops = allowedOperations[level];
+                char[] ops = Levels[level].allowedOperations;
                 operation = ops[r.Next(ops.Length)];
                 //Check check
                 int p = this.OperatorPriority;
                 int v = this.Value;
-                if((allowParantheses[level] || (firstElement.OperatorPriority > p && secondElement.OperatorPriority > p)) && v >= 0 && v <= resultLimit[level])
+                if((Levels[level].allowParantheses || (firstElement.OperatorPriority > p && secondElement.OperatorPriority > p)) && v >= 0 && v <= Levels[level].resultLimit)
                 {
                     break;
                 }
@@ -108,7 +110,7 @@ namespace Project_Atron
             {
                 if (isInt)
                 {
-                    return 1000;
+                    return int.MaxValue;
                 }
 
                 for(int i = 0; i < operatorsByOrder.Length; i++)

@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!--
+Level Editor Manual
+This the setup of levels. Change them or increase/decrease the number of levels.
+(Notice: Spelling must be correct with the right capitalization)
+However, All levels must contain:
+char[] allowedOperations
+int numberLimit
+int resultLimit
+int memberCountLimit
+bool allowParantheses
+
+SAMPLE LEVEL:
+<Level>
+  <allowedOperations>
+    <char>+</char>
+    <char>-</char>
+  </allowedOperations>
+  <numberLimit>10</numberLimit>
+  <resultLimit>10</resultLimit>
+  <memberCountLimit>2</memberCountLimit>
+  <allowParantheses>false</allowParantheses>
+</Level>
+-->
+<ArrayOfLevel>
+  <Level>
+    <allowedOperations>
+      <char>+</char>
+      <char>-</char>
+    </allowedOperations>
+    <numberLimit>10</numberLimit>
+    <resultLimit>10</resultLimit>
+    <memberCountLimit>2</memberCountLimit>
+    <allowParantheses>false</allowParantheses>
+  </Level>
+  <Level>
+    <allowedOperations>
+      <char>+</char>
+      <char>-</char>
+    </allowedOperations>
+    <numberLimit>30</numberLimit>
+    <resultLimit>50</resultLimit>
+    <memberCountLimit>2</memberCountLimit>
+    <allowParantheses>false</allowParantheses>
+  </Level>
+  <Level>
+    <allowedOperations>
+      <char>+</char>
+      <char>-</char>
+    </allowedOperations>
+    <numberLimit>100</numberLimit>
+    <resultLimit>100</resultLimit>
+    <memberCountLimit>3</memberCountLimit>
+    <allowParantheses>false</allowParantheses>
+  </Level>
+  <Level>
+    <allowedOperations>
+      <char>+</char>
+      <char>-</char>'
+      <char>*</char>
+    </allowedOperations>
+    <numberLimit>50</numberLimit>
+    <resultLimit>50</resultLimit>
+    <memberCountLimit>3</memberCountLimit>
+    <allowParantheses>true</allowParantheses>
+  </Level>
+  <Level>
+    <allowedOperations>
+      <char>+</char>
+      <char>-</char>
+      <char>*</char>
+    </allowedOperations>
+    <numberLimit>50</numberLimit>
+    <resultLimit>50</resultLimit>
+    <memberCountLimit>3</memberCountLimit>
+    <allowParantheses>true</allowParantheses>
+  </Level>
+</ArrayOfLevel>

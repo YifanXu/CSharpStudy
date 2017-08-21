@@ -3,18 +3,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.IO;
-namespace Project_Atron
+using System.Xml.Serialization;
+namespace Calculation_Test
 {
-    public class Calculation
+    public class Test
     {
         public int[] questionsNeeded;
         public int totalQuestions = 0;
         public Expression[] questions;
         public int[] points;
 
-        public Calculation(string path)
+        public Test()
+        {
+
+        }
+
+        public Test(string levelPath, string path)
         {
             Random r = new Random();
+            //Seralize Levels
+            XmlSerializer serializer = new XmlSerializer(typeof(Level[]));
+            using (Stream s = new FileStream(levelPath, FileMode.Open, FileAccess.Read))
+            {
+                Expression.Levels = serializer.Deserialize(s) as Level[];
+            }
 
             //ReadIn Question Amounts
             string[] input = File.ReadAllLines("data.txt");
@@ -41,7 +53,7 @@ namespace Project_Atron
             }
         }
 
-        public void Display()
+        public void Run()
         {
             int correctQuestions = 0;
             points = new int[totalQuestions];
@@ -77,7 +89,7 @@ namespace Project_Atron
             if(Console.ReadLine().ToLower() == "retry")
             {
                 Console.Clear();
-                Display();
+                Run();
             }
         }
 

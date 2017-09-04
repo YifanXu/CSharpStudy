@@ -1,0 +1,492 @@
+﻿<?xml version="1.0"?>
+<ArrayOfRoom xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Room>
+    <connections>
+      <RoomConnection>
+        <direction>e</direction>
+        <targetID>1</targetID>
+      </RoomConnection>
+    </connections>
+    <items>
+      <Item>
+        <name>Small Gravel</name>
+        <desc>A small rock with rock texture. It seems pretty useless</desc>
+        <quantity>10</quantity>
+        <dropChance>90</dropChance>
+      </Item>
+      <Item>
+        <name>Large Rock</name>
+        <desc>A large rock with rock texture. It seems prettyheavy</desc>
+        <quantity>10</quantity>
+        <obtainable>false</obtainable>
+      </Item>
+    </items>
+    <npcs>
+    </npcs>
+    <id>0</id>
+    <name>Cave Entrance</name>
+    <desc>A small a gloomy place. There is where you regained your conciousness. You can see a small tunnel leading east.</desc>
+  </Room>
+  <Room>
+    <connections>
+      <RoomConnection>
+        <direction>w</direction>
+        <targetID>0</targetID>
+      </RoomConnection>
+    <RoomConnection>
+      <direction>e</direction>
+      <targetID>2</targetID>
+    </RoomConnection>
+    </connections>
+    <items />
+    <npcs />
+    <id>1</id>
+    <name>Dark tunnel</name>
+    <desc>A narrow and dark tunnel leading east and west. Surrounding you are rocks, likely untouched for centries.</desc>
+  </Room>
+  <Room>
+    <id>2</id>
+    <connections>
+      <RoomConnection>
+        <direction>w</direction>
+        <targetID>1</targetID>
+      </RoomConnection>
+      <RoomConnection>
+        <direction>n</direction>
+        <targetID>3</targetID>
+      </RoomConnection>
+      <RoomConnection>
+        <direction>e</direction>
+        <targetID>4</targetID>
+      </RoomConnection>
+    </connections>
+    <name>Cave Exit</name>
+    <desc>From here, you can see a path leading out a cave to the east, and a cave that can be accessed by going west. A small hut is visible to the north.</desc>
+    <npcs>
+      <NPC>
+        <name>Old Man</name>
+        <maxHealth>100</maxHealth>
+        <health>100</health>
+        <standings>0</standings>
+        <inventory>
+          <Item>
+            <name>Gemstone</name>
+            <desc>A shiny gemstone. Probably worth a lot.</desc>
+            <quantity>1</quantity>
+            <dropChance>80</dropChance>
+          </Item>
+        </inventory>
+        <dialouges>
+          <input />
+          <responses>
+            <string>Hello, traveler.</string>
+          </responses>
+          <furtherDialouges>
+            <Dialouge>
+              <input>Why am I here?</input>
+              <responses>
+                <string>Why should i know?</string>
+                <string>I am just as clueless as you are.</string>
+              </responses>
+              <ifReturn>true</ifReturn>
+              <avaliableDialouges />
+            </Dialouge>
+            <Dialouge>
+              <input>Where do I go?</input>
+              <responses>
+                <string>Try going east, it seems to be the exit</string>
+                <string>Leave me be though, I too old and fat to move. Duh.</string>
+              </responses>
+              <ifReturn>true</ifReturn>
+              <avaliableDialouges />
+            </Dialouge>
+            <Dialouge>
+              <input>I've got a few stones to throw in your face</input>
+              <responses>
+                <string>Please don't.</string>
+              </responses>
+                <isAllowed>
+                  <type>Item</type>
+                  <itemsNeeded>
+                    <string>Small Gravel</string>
+                  </itemsNeeded>
+                  <quantityNeeded>
+                    <int>2</int>
+                  </quantityNeeded>
+                </isAllowed>
+              <ifReturn>false</ifReturn>
+            </Dialouge>-
+          </furtherDialouges>
+          <ifReturn>false</ifReturn>
+        </dialouges>
+      </NPC>
+    </npcs>
+    <items/>
+  </Room>
+  <Room>
+    <id>3</id>
+    <name>Small Hut</name>  
+    <desc>An old abandoned hut. There is nothing here.</desc>
+    <connections>
+      <RoomConnection>
+        <direction>s</direction>
+        <targetID>2</targetID>
+      </RoomConnection>
+    </connections>
+    <npcs>
+      <NPC>
+        <name>Some yasuo main</name>
+        <maxHealth>100</maxHealth>
+        <health>100</health>
+        <standings>0</standings>
+        <dialouges>
+          <input />
+          <responses>
+            <string>Fight me when I am playing yasuo!</string>
+            <string>I will feast on your deaths</string>
+          </responses>
+          <furtherDialouges>
+            <Dialouge>
+              <input>Well let's go you little shit. Your kind deserves no respect.</input>
+              <responses>
+                <string>Let's go!</string>
+              </responses>
+              <initiateFight>true</initiateFight>
+              <ifReturn>false</ifReturn>
+              <avaliableDialouges />
+            </Dialouge>
+            <Dialouge>
+              <input>Why don't you get out of the way?!</input>
+              <responses>
+                <string>Why should I?</string>
+              </responses>
+              <ifReturn>false</ifReturn>
+              <avaliableDialouges />
+            </Dialouge>
+          </furtherDialouges>
+          <ifReturn>false</ifReturn>
+        </dialouges>
+      </NPC>
+    </npcs>
+  </Room>
+  <Room>
+    <id>4</id>
+    <name>Dirt Path</name>
+    <desc>A dirt path, connecting a cave to the west and some stone structure to the east.</desc>
+    <connections>
+      <RoomConnection>
+        <direction>w</direction>
+        <targetID>2</targetID>
+      </RoomConnection>
+      <RoomConnection>
+        <direction>e</direction>
+        <targetID>5</targetID>
+      </RoomConnection>
+      <RoomConnection>
+        <direction>e</direction>
+        <targetID>4</targetID>
+      </RoomConnection>
+    </connections>
+    <items/>
+    <npcs/>
+  </Room>
+  <Room>
+    <id>5</id>
+    <name>Stone Portal</name>
+    <desc>A large stone structure stands before you, it is a gate of some kind. You can go through it by typing 'p' after a move command.</desc>
+    <connections>
+      <RoomConnection>
+        <direction>w</direction>
+        <targetID>4</targetID>
+      </RoomConnection>
+      <RoomConnection>
+        <direction>p</direction>
+        <targetID>6</targetID>
+        <trigger>
+          <type>Quest</type>
+          <QuestID>0</QuestID>
+          <QuestStage>5</QuestStage>
+        </trigger>
+      </RoomConnection>
+    </connections>
+    <items>
+      <Item>
+        <name>Ancient Coin</name>
+        <desc>A very old gold coin. It seems to be have been left here for ceuntries.</desc>
+      </Item>
+    </items>
+    <npcs/>
+  </Room>
+  <Room>
+    <id>6</id>
+    <name>Crypt Room</name>
+    <desc>A creepy and dark room. It would seems like this is a tomb of some sorts, juduging by the corpses around you. A narrow staircase leads upwards to the west.</desc>
+    <connections>
+      <RoomConnection>
+        <direction>w</direction>
+        <targetID>7</targetID>
+      </RoomConnection>
+    </connections>
+  </Room>
+  <Room>
+    <id>7</id>
+    <name>Cryptic Staircase</name>
+    <desc>A narrow stone staircase going east to west. You can feel the tiniest light coming from the west side.</desc>
+    <connections>
+      <RoomConnection>
+        <direction>e</direction>
+        <targetID>6</targetID>
+      </RoomConnection>
+      <RoomConnection>
+        <direction>w</direction>
+        <targetID>8</targetID>
+      </RoomConnection>
+    </connections>
+    <items>
+      <Item>
+        <name>Ancient Coin</name>
+        <desc>A very old gold coin. It seems to be have been left here for ceuntries.</desc>
+        <quantity>3</quantity>
+      </Item>
+    </items>
+    <npcs/>
+  </Room>
+  <Room>
+    <id>8</id>
+    <name>Ruins</name>
+    <desc>Ruins of old. They look like they are destroyed centuires ago. A shallow staircase descends to the east.</desc>
+    <connections>
+      <RoomConnection>
+        <direction>e</direction>
+        <targetID>7</targetID>
+      </RoomConnection>
+      <RoomConnection>
+        <direction>w</direction>
+        <targetID>9</targetID>
+        <trigger>
+          <type>Quest</type>
+          <QuestID>1</QuestID>
+          <QuestStage>3</QuestStage>
+        </trigger>
+      </RoomConnection>
+    </connections>
+    <npcs>
+      <NPC>
+        <name>Archaeologist</name>
+        <maxHealth>500</maxHealth>
+        <health>500</health>
+        <Attack>100</Attack>
+        <defAttack>100</defAttack>
+        <dialouges>
+          <input></input>
+          <responses>
+            <string>Who are you?</string>
+            <string>Don't get any closer to me, ok? I am stronger than you think.</string>
+          </responses>
+          <furtherDialouges>
+            <Dialouge>
+              <input>Well I am getting closer to ya. (Initate Combat)</input>
+              <responses>
+                <string>And I am not letting you escape alive.</string>
+              </responses>
+              <initiateFight>true</initiateFight>
+              <ifReturn>false</ifReturn>
+            </Dialouge>
+            <Dialouge>
+              <input>I do not mean to harm you in anyway, but I need your help.</input>
+              <responses>
+                <string>You do look kind of tired. Is there anything wrong?</string>
+              </responses>
+              <furtherDialouges>
+                <Dialouge>
+                  <input>I lost my memory, it would seem like. All I remember is that I went through a stone portal and then I ended up at the crypt room below.</input>
+                  <responses>
+                    <string>How interesting. It is fascinating if it is true.</string>
+                    <string>Nevertheless, I think I should tell you where to go from here. To the west there is a path that leads to the closest town from here.</string>
+                    <string>I still have some work to do here. And you, leave me alone.</string>
+                  </responses>
+                  <isAllowed>
+                    <type>Quest</type>
+                    <QuestID>1</QuestID>
+                    <QuestStage>2</QuestStage>
+                  </isAllowed>
+                </Dialouge>
+              </furtherDialouges>
+            </Dialouge>
+            <Dialouge>
+              <input>I've got a few weird coins. Do you happen to know what they are?</input>
+              <responses>
+                <string>What you've got there is an old coin, but our empress got rid of it a few thousand years ago and replaced it with more durable and light coins.</string>
+                <string>Nowadays it just serves as a collectors' item.</string>
+              </responses>
+              <furtherDialouges>
+                <Dialouge>
+                  <input>And so who is this emperess?</input>
+                  <responses>
+                    <string>Are you joking or are you some Lunar spy?</string>
+                    <string>Queen Solaria, the Immortal Emperess, has ruled this land for a few thousand years.</string>
+                    <string>We have prospered in her presense. She is also said to use some pretty serious magic.</string>
+                  </responses>
+                  <ifReturn>true</ifReturn>
+                </Dialouge>
+              </furtherDialouges>
+              <isAllowed>
+                <type>Item</type>
+                <itemsNeeded>
+                  <string>Ancient Coin</string>
+                </itemsNeeded>
+                <quantityNeeded>
+                  <int>1</int>
+                </quantityNeeded>
+              </isAllowed>
+              <ifReturn>true</ifReturn>
+            </Dialouge>
+          </furtherDialouges>
+        </dialouges>
+      </NPC>
+    </npcs>
+  </Room>
+  <Room>
+    <id>9</id>
+    <name>More Ruins</name>
+    <desc>Ruins of old. They look like they are destroyed centuires ago. A long dirt path extends beyond what you can see to the west</desc>
+    <connections>
+      <RoomConnection>
+        <direction>e</direction>
+        <targetID>8</targetID>
+      </RoomConnection>
+      <RoomConnection>
+        <direction>w</direction>
+        <targetID>10</targetID>
+      </RoomConnection>
+    </connections>
+  </Room>
+  <Room>
+    <id>10</id>
+    <name>Long path</name>
+    <connections>
+      <RoomConnection>
+        <direction>e</direction>
+        <targetID>9</targetID>
+      </RoomConnection>
+      <RoomConnection>
+        <direction>w</direction>
+        <targetID>11</targetID>
+      </RoomConnection>
+    </connections>
+    <npcs>
+      <NPC>
+        <name>Courier</name>
+        <inventory>
+          <Item>
+            <name>Letter</name>
+            <desc>It is a business letter between two towns, "Adalr" and "Cresent".</desc>
+            <dropChance>100</dropChance>
+          </Item>
+        </inventory>
+        <dialouges>
+          <input/>
+          <responses>
+            <string>Hello. Make it quick. I've got letters to deliver.</string>
+          </responses>
+          <furtherDialouges>
+            <Dialouge>
+              <input>Where does this path leads to?</input>
+              <responses>
+                <string>This path connects the city of Adalr and the Canterlot Ruins.</string>
+                <string>I will be on my way if you don't have anything else.</string>
+              </responses>
+            </Dialouge>
+            <Dialouge>
+              <input>Where are you going?</input>
+              <responses>
+                <string>None of your business.</string>
+              </responses>
+            </Dialouge>
+          </furtherDialouges>
+        </dialouges>
+      </NPC>
+    </npcs>
+  </Room>
+  <Room>
+    <id>11</id>
+    <name>Outpost</name>
+    <desc>A small outpost with a soldier stationed here. Pathes extend out to east, west and south path, but the South path is closed.</desc>
+    <connections>
+      <RoomConnection>
+        <direction>e</direction>
+        <targetID>10</targetID>
+      </RoomConnection>
+      <RoomConnection>
+        <direction>w</direction>
+        <targetID>12</targetID>
+      </RoomConnection>
+    </connections>
+    <npcs>
+      <NPC>
+        <name>Solar Knight</name>
+        <health>500</health>
+        <maxHealth>500</maxHealth>
+        <Attack>50</Attack>
+        <defAttack>50</defAttack>
+        <dialouges>
+          <input/>
+          <responses>
+            <string>Behave yourself, traveler.</string>
+          </responses>
+          <furtherDialouges>
+            <Dialouge>
+              <input>Where is the nearest town?</input>
+              <responses>
+                <string>It would be in your best interest to follow the path west. You will find yourself in the City of Adalr.</string>
+              </responses>
+              <ifReturn>true</ifReturn>
+            </Dialouge>
+            <Dialouge>
+              <input>How can I get to the capital?</input>
+              <responses>
+                <string>Looking to go to Celeria?</string>
+                <string>You need to follow the path west and take the ferry there. It is the fastest way there</string>
+                <string>By the way, the view is absolutely magnificent. If you have never been there, you will be amaaaaaaaaaaaaazed!</string>
+              </responses>
+              <ifReturn>true</ifReturn>
+            </Dialouge>
+            <Dialouge>
+              <input>What are the ruins to the east?</input>
+              <responses>
+                <string>You mean the Canterlot Ruins?</string>
+                <string>History has that Canterlot was once a city of magnificance, and it was the capital of an empire that ruled over all the lands.</string>
+                <string>But a few thousand years ago, a conflict between our Empress Solaria and her sister destroyed the city, leaving it as it is.</string>
+                <string>But who knows? Somebody could have made up that history.</string>
+              </responses>
+              <furtherDialouges>
+                <Dialouge>
+                  <input>Tell me more about the Empress.</input>
+                  <responses>
+                    <string>Her highness rules over us and help us prosper, but she is pretty mysterious to the common citizens.</string>
+                  </responses>
+                  <ifReturn>true</ifReturn>
+                </Dialouge>
+                <Dialouge>
+                  <input>Who would be the empress's sister?</input>
+                  <responses>
+                    <string>Luna, the leader of a lunatic empire. Admit it, it's funny.</string>
+                    <string>They and our empire always had large tensions, invasions had occured over and over again, but neither side destroyed the other. Not yet.</string>
+                    <string>Don't worry, soon we will be marching on their capital!</string>
+                  </responses>
+                  <ifReturn>true</ifReturn>
+                </Dialouge>
+              </furtherDialouges>
+            </Dialouge>
+          </furtherDialouges>
+        </dialouges>
+      </NPC>
+    </npcs>
+    <items>
+      <Item>
+        <name>Random Flyer</name>
+        <desc>A small flyer that advertises travel to the City of Adalr, but the date seems pretty old.</desc>
+      </Item>
+    </items>
+  </Room>
+</ArrayOfRoom>

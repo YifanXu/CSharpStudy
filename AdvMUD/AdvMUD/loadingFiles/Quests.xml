@@ -1,0 +1,69 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ArrayOfQuest xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <Quest>
+    <id>0</id>
+    <name>Where Am I??!</name>
+    <stage>0</stage>
+    <stageTriggers>
+      <Trigger>
+        <type>Location</type>
+        <roomID>1</roomID>
+      </Trigger>
+      <Trigger>
+        <type>Location</type>
+        <roomID>2</roomID>
+      </Trigger>
+      <Trigger>
+        <type>Dialouge</type>
+        <npcName>Old Man</npcName>
+        <dialougeInput>Why am I here?</dialougeInput>
+      </Trigger>
+      <Trigger>
+        <type>Location</type>
+        <roomID>4</roomID>
+      </Trigger>
+      <Trigger>
+        <type>Location</type>
+        <roomID>5</roomID>
+      </Trigger>
+      <Trigger>
+        <type>Location</type>
+        <roomID>6</roomID>
+      </Trigger>
+    </stageTriggers>
+    <messages>
+      <string>I woke up in a cave with no memory. I need to get some help from others, if I can find them.</string>
+      <string>I have reached the cave's entrance with an old man relaxing. I need to ask him of help.</string>
+      <string>Looks like he is of no help. I should explore around then.</string>
+      <string>I am seeing a large stone structure. I must take a closer inspection.</string>
+      <string>A portal of such magnificance! Where will it take me? A whole new world?</string>
+      <string>It would seemed like i was teleported to a strange new world. I must explore around here and survive.</string>
+    </messages>
+  </Quest>
+  <Quest>
+    <id>1</id>
+    <name>A brave new world</name>
+    <stage>0</stage>
+    <stageTriggers>
+      <Trigger>
+        <type>Quest</type>
+        <QuestID>0</QuestID>
+        <QuestStage>6</QuestStage>
+      </Trigger>
+      <Trigger>
+        <type>Location</type>
+        <roomID>8</roomID>
+      </Trigger>
+      <Trigger>
+        <type>Dialouge</type>
+        <npcName>Archaeologist</npcName>
+        <dialougeInput>I lost my memory, it would seem like. All I remember is that I went through a stone portal and then I ended up at the crypt room below.</dialougeInput>
+      </Trigger>
+    </stageTriggers>
+    <messages>
+      <string>I have arrived in an old crpt, but I am not scared of the corpses, at least I tell myself. </string>
+      <string>Ruins?! I don't understand. I must investigate further.</string>
+      <string>It would seems like going west is a good idea.</string>
+    </messages>
+  </Quest>
+</ArrayOfQuest>

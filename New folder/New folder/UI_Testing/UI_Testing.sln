@@ -1,0 +1,26 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2015
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI_Testing.Plugins", "UI_Testing.Plugins.csproj", "{8C203801-030E-4D81-E53E-3E6A209092AB}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "UI_Testing.Editor.Plugins", "UI_Testing.Editor.Plugins.csproj", "{A7BCD6D5-86A9-CF39-369E-6C3821249D73}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{8C203801-030E-4D81-E53E-3E6A209092AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8C203801-030E-4D81-E53E-3E6A209092AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8C203801-030E-4D81-E53E-3E6A209092AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8C203801-030E-4D81-E53E-3E6A209092AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A7BCD6D5-86A9-CF39-369E-6C3821249D73}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A7BCD6D5-86A9-CF39-369E-6C3821249D73}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A7BCD6D5-86A9-CF39-369E-6C3821249D73}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A7BCD6D5-86A9-CF39-369E-6C3821249D73}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
